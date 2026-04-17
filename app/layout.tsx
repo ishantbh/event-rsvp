@@ -3,6 +3,7 @@ import { Geist_Mono, Inter } from 'next/font/google'
 
 import { cn } from '@/lib/utils'
 import { ThemeProvider } from '@/components/theme/theme-provider'
+import { Header } from '@/components/header'
 
 import './globals.css'
 
@@ -42,6 +43,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Header />
+
           {children}
         </ThemeProvider>
       </body>
