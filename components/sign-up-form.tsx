@@ -143,6 +143,15 @@ export function SignUpForm() {
 
             <form.Field
               name='confirmPassword'
+              validators={{
+                onChangeListenTo: ['password'],
+                onChange: ({ value, fieldApi }) => {
+                  if (value !== fieldApi.form.getFieldValue('password')) {
+                    return { message: 'Passwords do not match' }
+                  }
+                  return undefined
+                },
+              }}
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
