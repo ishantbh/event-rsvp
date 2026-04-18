@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import { authClient } from '@/lib/auth-client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -12,12 +14,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export function UserAvatar() {
+  const router = useRouter()
+
   function signOut() {
-    console.log('Signing out...')
     authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          console.log('Signed out successfully')
+          router.push('/sign-in')
         },
       },
     })
