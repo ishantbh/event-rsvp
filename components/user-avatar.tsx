@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 
 import { authClient } from '@/lib/auth-client'
+import { getInitials } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,9 +12,15 @@ import {
   DropdownMenuItem,
   DropdownMenu,
   DropdownMenuGroup,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 
-export function UserAvatar() {
+type UserAvatarProps = {
+  name: string
+  image?: string
+}
+
+export function UserAvatar({ name, image }: UserAvatarProps) {
   const router = useRouter()
 
   function signOut() {
@@ -31,12 +38,16 @@ export function UserAvatar() {
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='rounded-full'>
           <Avatar>
-            <AvatarImage src='https://github.com/shadcn.png' alt='shadcn' />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={image} alt={name} />
+            <AvatarFallback>{getInitials(name)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-32'>
+        <DropdownMenuGroup>
+          <DropdownMenuItem disabled>{name}</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem variant='destructive' onClick={signOut}>
             Sign out

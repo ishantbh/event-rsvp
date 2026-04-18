@@ -17,24 +17,20 @@ export function Header() {
           <Link href='/'>Event RSVP</Link>
         </div>
 
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-3'>
           {!isPending && !error && (
             <nav>
-              <ul className='flex items-center gap-4'>
+              <ul className='flex items-center'>
                 {session ? (
-                  <>
-                    <li>
-                      <Button
-                        variant='link'
-                        className='text-muted-foreground'
-                        asChild
-                      >
-                        <Link href='/dashboard'>Dashboard</Link>
-                      </Button>
-                    </li>
-
-                    <UserAvatar />
-                  </>
+                  <li>
+                    <Button
+                      variant='link'
+                      className='text-muted-foreground'
+                      asChild
+                    >
+                      <Link href='/dashboard'>Dashboard</Link>
+                    </Button>
+                  </li>
                 ) : (
                   <li>
                     <Button
@@ -48,6 +44,13 @@ export function Header() {
                 )}
               </ul>
             </nav>
+          )}
+
+          {session && (
+            <UserAvatar
+              name={session.user.name}
+              image={session.user.image ?? undefined}
+            />
           )}
 
           <ModeToggle />
