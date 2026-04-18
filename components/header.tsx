@@ -4,6 +4,7 @@ import { headers } from 'next/headers'
 import { auth } from '@/auth'
 import { Button } from '@/components/ui/button'
 import { ModeToggle } from '@/components/theme/mode-toggle'
+import { UserAvatar } from '@/components/user-avatar'
 
 export async function Header() {
   const session = await auth.api.getSession({
@@ -21,15 +22,19 @@ export async function Header() {
           <nav>
             <ul className='flex items-center gap-4'>
               {session ? (
-                <li>
-                  <Button
-                    variant='link'
-                    className='text-muted-foreground'
-                    asChild
-                  >
-                    <Link href='/dashboard'>Dashboard</Link>
-                  </Button>
-                </li>
+                <>
+                  <li>
+                    <Button
+                      variant='link'
+                      className='text-muted-foreground'
+                      asChild
+                    >
+                      <Link href='/dashboard'>Dashboard</Link>
+                    </Button>
+                  </li>
+
+                  <UserAvatar />
+                </>
               ) : (
                 <li>
                   <Button
