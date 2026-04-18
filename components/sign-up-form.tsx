@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 
+import { authClient } from '@/lib/auth-client'
 import { SignUpFormSchema } from '@/lib/schemas'
 import {
   Card,
@@ -35,7 +36,28 @@ export function SignUpForm() {
       onSubmit: SignUpFormSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      const { name, email, password } = value
+
+      const { data, error } = await authClient.signUp.email(
+        {
+          email,
+          password,
+          name,
+          callbackURL: '/dashboard',
+        },
+        {
+          onRequest: (ctx) => {
+            //show loading
+          },
+          onSuccess: (ctx) => {
+            //redirect to the dashboard or sign in page
+          },
+          onError: (ctx) => {
+            // display the error message
+            alert(ctx.error.message)
+          },
+        },
+      )
     },
   })
 
