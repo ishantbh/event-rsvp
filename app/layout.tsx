@@ -4,6 +4,7 @@ import { Geist_Mono, Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Header } from '@/components/header'
+import { Toaster } from '@/components/ui/sonner'
 
 import './globals.css'
 
@@ -48,6 +49,8 @@ export default function RootLayout({
           <main className='w-full max-w-6xl mx-auto flex-1 flex flex-col px-4 py-8'>
             {children}
           </main>
+
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
