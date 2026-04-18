@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { authClient } from '@/lib/auth-client'
 import { SignUpFormSchema } from '@/lib/schemas'
@@ -38,7 +39,7 @@ export function SignUpForm() {
     onSubmit: async ({ value }) => {
       const { name, email, password } = value
 
-      const { data, error } = await authClient.signUp.email(
+      await authClient.signUp.email(
         {
           email,
           password,
@@ -46,15 +47,11 @@ export function SignUpForm() {
           callbackURL: '/dashboard',
         },
         {
-          onRequest: (ctx) => {
-            //show loading
-          },
-          onSuccess: (ctx) => {
-            //redirect to the dashboard or sign in page
+          onSuccess: () => {
+            toast.success('Sign up successful')
           },
           onError: (ctx) => {
-            // display the error message
-            alert(ctx.error.message)
+            toast.error(ctx.error.message)
           },
         },
       )
