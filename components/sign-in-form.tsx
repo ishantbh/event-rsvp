@@ -3,7 +3,9 @@
 import Link from 'next/link'
 import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
+import { authClient } from '@/lib/auth-client'
 import { SignInFormSchema } from '@/lib/schemas'
 import { Button } from '@/components/ui/button'
 import {
@@ -33,7 +35,23 @@ export function SignInForm() {
       onSubmit: SignInFormSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      const { email, password } = value
+
+      await authClient.signIn.email(
+        {
+          email,
+          password,
+          callbackURL: '/dashboard',
+        },
+        {
+          onSuccess: () => {
+            toast.success('Sign in successful')
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.message)
+          },
+        },
+      )
     },
   })
 
