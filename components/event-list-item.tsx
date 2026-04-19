@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 
 type EventListItemProps = {
   event: {
@@ -10,10 +11,13 @@ type EventListItemProps = {
     title: string
     location: string | null
     eventDate: Date | null
+    eventRsvps: Record<PrismaRsvpStatus, number>
   }
 }
 
 export function EventListItem({ event }: EventListItemProps) {
+  const { going, maybe, not_going } = event.eventRsvps
+
   return (
     <li>
       <Card>
@@ -27,9 +31,9 @@ export function EventListItem({ event }: EventListItemProps) {
           </CardAction>
 
           <div className='flex flex-wrap gap-2 items-center'>
-            <Badge>Going: 0</Badge>
-            <Badge variant='secondary'>Maybe: 0</Badge>
-            <Badge variant='outline'>Not Going: 0</Badge>
+            <Badge>Going: {going}</Badge>
+            <Badge variant='secondary'>Maybe: {maybe}</Badge>
+            <Badge variant='outline'>Not Going: {not_going}</Badge>
           </div>
 
           <p className='text-sm text-muted-foreground'>
