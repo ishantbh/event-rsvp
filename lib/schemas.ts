@@ -18,3 +18,10 @@ export const SignUpFormSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+export const NewEventFormSchema = z.object({
+  title: z.string().min(1, 'Name is required'),
+  description: z.string(),
+  location: z.string(),
+  eventDate: z.string(),
+})
