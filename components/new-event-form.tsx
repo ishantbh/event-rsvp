@@ -1,0 +1,201 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { useForm } from '@tanstack/react-form'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
+
+import { NewEventFormSchema } from '@/lib/schemas'
+import { createEventAction } from '@/lib/actions'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+
+export function NewEventForm() {
+  const router = useRouter()
+
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      description: '',
+      location: '',
+      eventDate: '',
+    },
+    validators: {
+      onSubmit: NewEventFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const eventId = await createEventAction(value)
+
+        toast.success('Event created successfully')
+
+        router.push(`/events/${eventId}`)
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : 'Something went wrong',
+        )
+      }
+    },
+  })
+
+  return (
+    <Card className='w-full max-w-md'>
+      <CardHeader>
+        <CardTitle>Create Event</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form
+          id='create-event-form'
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <FieldGroup>
+            <form.Field
+              name='title'
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder='Team Dinner'
+                      required
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+            <form.Field
+              name='description'
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                    <Textarea
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+            <form.Field
+              name='location'
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Location</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder='123 Main St, Anytown USA'
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+            <form.Field
+              name='eventDate'
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Date and Time</FieldLabel>
+                    <Input
+                      type='datetime-local'
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldDescription>
+                      Optional, you can add this later
+                    </FieldDescription>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+          </FieldGroup>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Field orientation='horizontal'>
+          <Button type='button' variant='outline' onClick={() => form.reset()}>
+            Reset
+          </Button>
+
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <Button
+                type='submit'
+                form='create-event-form'
+                disabled={!canSubmit}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className='size-4 animate-spin' />
+                    <span>Creating...</span>
+                  </>
+                ) : (
+                  <span>Create Event</span>
+                )}
+              </Button>
+            )}
+          />
+        </Field>
+      </CardFooter>
+    </Card>
+  )
+}
