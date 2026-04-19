@@ -3,6 +3,7 @@ import Link from 'next/link'
 import prisma from '@/lib/prisma'
 import { Button } from '@/components/ui/button'
 import { NoEvents } from '@/components/no-events'
+import { EventListItem } from '@/components/event-list-item'
 
 type DashboardContentProps = {
   userId: string
@@ -46,7 +47,7 @@ export async function DashboardContent({ userId }: DashboardContentProps) {
       ) : (
         <ul className='grid gap-4 md:grid-cols-2'>
           {events.map((event) => (
-            <div key={event.id}>{event.title}</div>
+            <EventListItem key={event.id} event={event} />
           ))}
         </ul>
       )}
