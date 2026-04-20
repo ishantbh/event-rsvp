@@ -45,6 +45,9 @@ export async function EventDetailContent({
       },
       { going: 0, maybe: 0, not_going: 0 } as Record<PrismaRsvpStatus, number>,
     ),
+    inviteUrl: row.invite?.token
+      ? `${process.env.NEXT_PUBLIC_APP_URL || ''}/invites/${row.invite.token}`
+      : null,
   }
 
   return (
@@ -78,7 +81,7 @@ export async function EventDetailContent({
         <Badge variant='outline'>Not Going: {event.eventRsvps.not_going}</Badge>
       </div>
 
-      <EventInvite eventId={event.id} />
+      <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
     </div>
   )
 }
