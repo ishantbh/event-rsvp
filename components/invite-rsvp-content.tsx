@@ -13,9 +13,13 @@ import { InviteRsvpForm } from '@/components/invite-rsvp-form'
 
 type InviteRsvpContentProps = {
   token: string
+  submitted: boolean
 }
 
-export async function InviteRsvpContent({ token }: InviteRsvpContentProps) {
+export async function InviteRsvpContent({
+  token,
+  submitted,
+}: InviteRsvpContentProps) {
   const row = await prisma.eventInvite.findUnique({
     where: { token },
     include: {
@@ -52,6 +56,12 @@ export async function InviteRsvpContent({ token }: InviteRsvpContentProps) {
           )}
         </CardHeader>
         <CardContent>
+          {submitted && (
+            <p className='mb-4 rounded-md border border-primary/50 bg-primary/50 p-3 text-primary-foreground'>
+              Thanks. Your RSVP has been recorded.
+            </p>
+          )}
+
           <InviteRsvpForm />
         </CardContent>
       </Card>
