@@ -1,3 +1,4 @@
+import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { z } from 'zod'
 
 export const SignInFormSchema = z.object({
@@ -24,4 +25,10 @@ export const NewEventFormSchema = z.object({
   description: z.string(),
   location: z.string(),
   eventDate: z.string(),
+})
+
+export const InviteRsvpFormSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.email(),
+  attendance: z.enum(PrismaRsvpStatus),
 })
