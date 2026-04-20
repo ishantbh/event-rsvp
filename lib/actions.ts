@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
-import { NewEventFormSchema } from '@/lib/schemas'
+import { InviteRsvpFormSchema, NewEventFormSchema } from '@/lib/schemas'
 
 export async function createEventAction({
   title,
@@ -85,4 +85,45 @@ export async function createInviteAction(eventId: string) {
   })
 
   revalidatePath(`/events/${eventId}`)
+}
+
+export async function submitRsvpAction(
+  token: string,
+  value: { name: string; email: string; attendance: string },
+) {
+  const res = InviteRsvpFormSchema.safeParse(value)
+
+  if (res.error) {
+    throw new Error(res.error.message)
+  }
+
+  const invite = await prisma.eventInvite.findUnique({
+    where: { token },
+    select: { id: true, eventId: true },
+  })
+
+  if (!invite) {
+    throw new Error('Invite link is invalid.')
+  }
+
+  const emailNormalized = res.data.email.toLowerCase()
+
+  await prisma.eventRsvp.upsert({
+    where: {
+      eventId_emailNormalized: { eventId: invite.eventId, emailNormalized },
+    },
+    create: {
+      eventId: invite.eventId,
+      inviteId: invite.id,
+      name: res.data.name,
+      email: res.data.email,
+      emailNormalized,
+      status: res.data.attendance,
+    },
+    update: {
+      name: res.data.name,
+      status: res.data.attendance,
+      respondedAt: new Date(),
+    },
+  })
 }
