@@ -1,3 +1,5 @@
+import { InviteRsvpContent } from '@/components/invite-rsvp-content'
+
 export default async function InvitePage({
   params,
 }: {
@@ -5,5 +7,5 @@ export default async function InvitePage({
 }) {
   const { token } = await params
 
-  return <div>Invite Page: {token}</div>
+  return <InviteRsvpContent token={token} />
 }
