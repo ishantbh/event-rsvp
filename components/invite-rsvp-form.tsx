@@ -20,7 +20,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-export function InviteRsvpForm() {
+type InviteRsvpFormProps = {
+  submitted: boolean
+}
+
+export function InviteRsvpForm({ submitted }: InviteRsvpFormProps) {
   const form = useForm({
     defaultValues: {
       name: '',
@@ -61,6 +65,7 @@ export function InviteRsvpForm() {
                   aria-invalid={isInvalid}
                   placeholder='John Doe'
                   required
+                  disabled={submitted}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -86,6 +91,7 @@ export function InviteRsvpForm() {
                   aria-invalid={isInvalid}
                   placeholder='john@example.com'
                   required
+                  disabled={submitted}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
@@ -105,6 +111,7 @@ export function InviteRsvpForm() {
                   name={field.name}
                   value={field.state.value}
                   onValueChange={field.handleChange}
+                  disabled={submitted}
                 >
                   <SelectTrigger
                     id='invite-rsvp-form-attendance'
@@ -133,10 +140,17 @@ export function InviteRsvpForm() {
         />
 
         <Field orientation='horizontal'>
-          <Button type='button' variant='outline' onClick={() => form.reset()}>
+          <Button
+            type='button'
+            variant='outline'
+            onClick={() => form.reset()}
+            disabled={submitted}
+          >
             Reset
           </Button>
-          <Button type='submit'>Submit</Button>
+          <Button type='submit' disabled={submitted}>
+            Submit
+          </Button>
         </Field>
       </FieldGroup>
     </form>

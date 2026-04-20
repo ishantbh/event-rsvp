@@ -62,7 +62,7 @@ export async function InviteRsvpContent({
             </p>
           )}
 
-          <InviteRsvpForm />
+          <InviteRsvpForm submitted={submitted} />
         </CardContent>
       </Card>
     </div>
