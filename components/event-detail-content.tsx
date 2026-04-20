@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma'
 import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { EventInvite } from '@/components/event-invite'
 
 type EventDetailContentProps = {
   userId: string
@@ -76,6 +77,8 @@ export async function EventDetailContent({
         <Badge variant='secondary'>Maybe: {event.eventRsvps.maybe}</Badge>
         <Badge variant='outline'>Not Going: {event.eventRsvps.not_going}</Badge>
       </div>
+
+      <EventInvite eventId={event.id} />
     </div>
   )
 }

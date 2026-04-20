@@ -1,10 +1,10 @@
 'use server'
 
+import { headers } from 'next/headers'
+
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { NewEventFormSchema } from '@/lib/schemas'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 export async function createEventAction({
   title,
@@ -54,3 +54,5 @@ export async function createEventAction({
 
   return created.id
 }
+
+export async function createInviteAction(eventId: string) {}
