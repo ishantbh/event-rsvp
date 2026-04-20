@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
+import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 
 type EventListItemProps = {
   event: {

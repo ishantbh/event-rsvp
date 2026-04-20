@@ -1,10 +1,10 @@
 import Link from 'next/link'
 
 import prisma from '@/lib/prisma'
+import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { Button } from '@/components/ui/button'
 import { NoEvents } from '@/components/no-events'
 import { EventListItem } from '@/components/event-list-item'
-import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 
 type DashboardContentProps = {
   userId: string
@@ -32,7 +32,6 @@ export async function DashboardContent({ userId }: DashboardContentProps) {
       },
       { going: 0, maybe: 0, not_going: 0 } as Record<PrismaRsvpStatus, number>,
     ),
-    eventDate: row.eventDate ? new Date(row.eventDate) : null,
   }))
 
   return (
