@@ -62,7 +62,7 @@ export async function InviteRsvpContent({
             </p>
           )}
 
-          <InviteRsvpForm submitted={submitted} />
+          <InviteRsvpForm token={token} submitted={submitted} />
         </CardContent>
       </Card>
     </div>

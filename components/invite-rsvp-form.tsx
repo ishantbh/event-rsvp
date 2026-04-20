@@ -1,9 +1,13 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useForm } from '@tanstack/react-form'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { InviteRsvpFormSchema } from '@/lib/schemas'
+import { submitRsvpAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
   Field,
@@ -19,13 +23,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Loader2 } from 'lucide-react'
 
 type InviteRsvpFormProps = {
+  token: string
   submitted: boolean
 }
 
-export function InviteRsvpForm({ submitted }: InviteRsvpFormProps) {
+export function InviteRsvpForm({ token, submitted }: InviteRsvpFormProps) {
+  const router = useRouter()
+
+  const submitRsvpActionWithToken = submitRsvpAction.bind(null, token)
+
   const form = useForm({
     defaultValues: {
       name: '',
@@ -36,7 +44,15 @@ export function InviteRsvpForm({ submitted }: InviteRsvpFormProps) {
       onSubmit: InviteRsvpFormSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      try {
+        await submitRsvpActionWithToken(value)
+
+        router.replace(`/invites/${token}?submitted=1`)
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : 'Something went wrong',
+        )
+      }
     },
   })
 
