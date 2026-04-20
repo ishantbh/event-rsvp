@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Loader2 } from 'lucide-react'
 
 type InviteRsvpFormProps = {
   submitted: boolean
@@ -148,9 +149,22 @@ export function InviteRsvpForm({ submitted }: InviteRsvpFormProps) {
           >
             Reset
           </Button>
-          <Button type='submit' disabled={submitted}>
-            Submit
-          </Button>
+
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <Button type='submit' disabled={!canSubmit || submitted}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className='size-4 animate-spin' />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  <span>Submit</span>
+                )}
+              </Button>
+            )}
+          />
         </Field>
       </FieldGroup>
     </form>
