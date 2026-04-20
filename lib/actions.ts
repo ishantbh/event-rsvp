@@ -1,6 +1,7 @@
 'use server'
 
 import { headers } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
@@ -55,4 +56,33 @@ export async function createEventAction({
   return created.id
 }
 
-export async function createInviteAction(eventId: string) {}
+export async function createInviteAction(eventId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    throw new Error('Unauthorized')
+  }
+
+  const userId = session.user.id
+
+  const event = await prisma.event.findUnique({
+    where: { ownerUserId: userId, id: eventId },
+    select: { id: true },
+  })
+
+  if (!event) {
+    throw new Error('Event not found')
+  }
+
+  const token = crypto.randomUUID().replace(/-/g, '')
+
+  await prisma.eventInvite.upsert({
+    where: { eventId },
+    create: { eventId, token },
+    update: { token },
+  })
+
+  revalidatePath(`/events/${eventId}`)
+}
