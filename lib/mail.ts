@@ -2,19 +2,24 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export async function sendEmail({
+export async function sendResetEmail({
   to,
-  subject,
-  html,
+  resetUrl,
+  userName,
 }: {
   to: string
-  subject: string
-  html: string
+  resetUrl: string
+  userName: string
 }) {
   return await resend.emails.send({
     from: 'onboarding@resend.dev',
     to,
-    subject,
-    html,
+    template: {
+      id: 'password-reset',
+      variables: {
+        user_name: userName,
+        reset_password_url: resetUrl,
+      },
+    },
   })
 }
