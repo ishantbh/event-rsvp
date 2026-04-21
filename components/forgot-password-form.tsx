@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { useForm } from '@tanstack/react-form'
-import { Loader2 } from 'lucide-react'
+import { z } from 'zod'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 import { authClient } from '@/lib/auth-client'
-import { SignInFormSchema } from '@/lib/schemas'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -25,27 +25,29 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 
-export function SignInForm() {
+const ForgotPasswordFormSchema = z.object({
+  email: z.email(),
+})
+
+export function ForgotPasswordForm() {
   const form = useForm({
     defaultValues: {
       email: '',
-      password: '',
     },
     validators: {
-      onSubmit: SignInFormSchema,
+      onSubmit: ForgotPasswordFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const { email, password } = value
+      const { email } = value
 
-      await authClient.signIn.email(
+      await authClient.requestPasswordReset(
         {
           email,
-          password,
-          callbackURL: '/dashboard',
+          redirectTo: '/reset-password',
         },
         {
           onSuccess: () => {
-            toast.success('Sign in successful')
+            toast.success('Password reset link sent to your email')
           },
           onError: (ctx) => {
             toast.error(ctx.error.message)
@@ -58,20 +60,19 @@ export function SignInForm() {
   return (
     <Card className='w-full max-w-sm'>
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
+        <CardTitle>Forgot Password?</CardTitle>
         <CardDescription>
-          Enter your email and password to sign in to your account
+          Enter your email to receive a password reset link
         </CardDescription>
-
         <CardAction>
           <Button variant='outline' asChild>
-            <Link href='/sign-up'>Sign up</Link>
+            <Link href='/sign-in'>Sign in</Link>
           </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
         <form
-          id='sign-in-form'
+          id='forgot-password-form'
           onSubmit={(e) => {
             e.preventDefault()
             form.handleSubmit()
@@ -104,44 +105,6 @@ export function SignInForm() {
                 )
               }}
             />
-            <form.Field
-              name='password'
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <div className='flex items-center justify-between gap-2'>
-                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-
-                      <Button
-                        variant='link'
-                        size='sm'
-                        className='text-muted-foreground'
-                        asChild
-                      >
-                        <Link href='/forgot-password'>
-                          Forgot your password?
-                        </Link>
-                      </Button>
-                    </div>
-                    <Input
-                      type='password'
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      required
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
           </FieldGroup>
         </form>
       </CardContent>
@@ -150,15 +113,13 @@ export function SignInForm() {
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button type='submit' form='sign-in-form' disabled={!canSubmit}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className='size-4 animate-spin' />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <span>Sign In</span>
-                )}
+              <Button
+                type='submit'
+                form='forgot-password-form'
+                disabled={!canSubmit}
+              >
+                {isSubmitting && <Loader2 className='size-4 animate-spin' />}
+                <span>Reset Password</span>
               </Button>
             )}
           />

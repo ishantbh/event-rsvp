@@ -1,21 +1,18 @@
 'use client'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useForm } from '@tanstack/react-form'
-import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { ResetPasswordFormSchema } from '@/lib/schemas'
 import { authClient } from '@/lib/auth-client'
-import { SignInFormSchema } from '@/lib/schemas'
-import { Button } from '@/components/ui/button'
 import {
   Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
 } from '@/components/ui/card'
 import {
   Field,
@@ -24,28 +21,33 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 
-export function SignInForm() {
+export function ResetPasswordForm({ token }: { token: string }) {
+  const router = useRouter()
+
   const form = useForm({
     defaultValues: {
-      email: '',
       password: '',
+      confirmPassword: '',
     },
     validators: {
-      onSubmit: SignInFormSchema,
+      onSubmit: ResetPasswordFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const { email, password } = value
+      const { password } = value
 
-      await authClient.signIn.email(
+      await authClient.resetPassword(
         {
-          email,
-          password,
-          callbackURL: '/dashboard',
+          token,
+          newPassword: password,
         },
         {
           onSuccess: () => {
-            toast.success('Sign in successful')
+            toast.success('Password changed successfully')
+
+            router.push('/sign-in')
           },
           onError: (ctx) => {
             toast.error(ctx.error.message)
@@ -58,20 +60,14 @@ export function SignInForm() {
   return (
     <Card className='w-full max-w-sm'>
       <CardHeader>
-        <CardTitle>Sign In</CardTitle>
+        <CardTitle>Reset Password</CardTitle>
         <CardDescription>
-          Enter your email and password to sign in to your account
+          Enter your new password to reset your account
         </CardDescription>
-
-        <CardAction>
-          <Button variant='outline' asChild>
-            <Link href='/sign-up'>Sign up</Link>
-          </Button>
-        </CardAction>
       </CardHeader>
       <CardContent>
         <form
-          id='sign-in-form'
+          id='reset-password-form'
           onSubmit={(e) => {
             e.preventDefault()
             form.handleSubmit()
@@ -79,22 +75,21 @@ export function SignInForm() {
         >
           <FieldGroup>
             <form.Field
-              name='email'
+              name='password'
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                     <Input
-                      type='email'
+                      type='password'
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
-                      placeholder='john@mail.com'
                       required
                     />
                     {isInvalid && (
@@ -104,27 +99,27 @@ export function SignInForm() {
                 )
               }}
             />
+
             <form.Field
-              name='password'
+              name='confirmPassword'
+              validators={{
+                onChangeListenTo: ['password'],
+                onChange: ({ value, fieldApi }) => {
+                  if (value !== fieldApi.form.getFieldValue('password')) {
+                    return { message: 'Passwords do not match' }
+                  }
+                  return undefined
+                },
+              }}
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <div className='flex items-center justify-between gap-2'>
-                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Confirm Password
+                    </FieldLabel>
 
-                      <Button
-                        variant='link'
-                        size='sm'
-                        className='text-muted-foreground'
-                        asChild
-                      >
-                        <Link href='/forgot-password'>
-                          Forgot your password?
-                        </Link>
-                      </Button>
-                    </div>
                     <Input
                       type='password'
                       id={field.name}
@@ -150,15 +145,13 @@ export function SignInForm() {
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button type='submit' form='sign-in-form' disabled={!canSubmit}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className='size-4 animate-spin' />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <span>Sign In</span>
-                )}
+              <Button
+                type='submit'
+                form='reset-password-form'
+                disabled={!canSubmit}
+              >
+                {isSubmitting && <Loader2 className='size-4 animate-spin' />}
+                <span>Reset Password</span>
               </Button>
             )}
           />
