@@ -3,8 +3,10 @@
 import Link from 'next/link'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
+import { authClient } from '@/lib/auth-client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -36,7 +38,22 @@ export function ForgotPasswordForm() {
       onSubmit: ForgotPasswordFormSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      const { email } = value
+
+      await authClient.requestPasswordReset(
+        {
+          email,
+          redirectTo: '/reset-password',
+        },
+        {
+          onSuccess: () => {
+            toast.success('Password reset link sent to your email')
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.message)
+          },
+        },
+      )
     },
   })
 
