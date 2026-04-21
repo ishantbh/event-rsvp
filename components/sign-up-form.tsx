@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -26,6 +27,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
 export function SignUpForm() {
+  const router = useRouter()
+
   const form = useForm({
     defaultValues: {
       name: '',
@@ -44,11 +47,12 @@ export function SignUpForm() {
           email,
           password,
           name,
-          callbackURL: '/dashboard',
         },
         {
           onSuccess: () => {
             toast.success('Sign up successful')
+
+            router.push('/dashboard')
           },
           onError: (ctx) => {
             toast.error(ctx.error.message)
