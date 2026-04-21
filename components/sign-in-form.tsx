@@ -120,7 +120,9 @@ export function SignInForm() {
                         className='text-muted-foreground'
                         asChild
                       >
-                        <Link href='#'>Forgot your password?</Link>
+                        <Link href='/forgot-password'>
+                          Forgot your password?
+                        </Link>
                       </Button>
                     </div>
                     <Input
