@@ -1,5 +1,6 @@
-import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { z } from 'zod'
+
+import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 
 export const SignInFormSchema = z.object({
   email: z.email(),
@@ -10,10 +11,10 @@ export const SignUpFormSchema = z
   .object({
     name: z.string().min(1, 'Name is required'),
     email: z.email(),
-    password: z.string().min(6, 'Password must be at least 6 characters long'),
+    password: z.string().min(8, 'Password must be at least 8 characters long'),
     confirmPassword: z
       .string()
-      .min(6, 'Confirm password must be at least 6 characters long'),
+      .min(8, 'Confirm password must be at least 8 characters long'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -32,3 +33,15 @@ export const InviteRsvpFormSchema = z.object({
   email: z.email(),
   attendance: z.enum(PrismaRsvpStatus),
 })
+
+export const ResetPasswordFormSchema = z
+  .object({
+    password: z.string().min(8, 'Password must be at least 8 characters long'),
+    confirmPassword: z
+      .string()
+      .min(8, 'Confirm password must be at least 8 characters long'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
