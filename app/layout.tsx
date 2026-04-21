@@ -16,7 +16,10 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Event RSVP',
+  title: {
+    template: `%s | Event RSVP`,
+    default: 'Event RSVP',
+  },
   description: 'Create, manage and RSVP for events',
 }
 
