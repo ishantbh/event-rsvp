@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { SignInWithGitHub } from '@/components/sign-in-with-github'
 
 export function SignUpForm() {
   const router = useRouter()
@@ -221,6 +222,8 @@ export function SignUpForm() {
               </Button>
             )}
           />
+
+          <SignInWithGitHub />
         </Field>
       </CardFooter>
     </Card>

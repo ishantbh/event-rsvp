@@ -24,6 +24,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { SignInWithGitHub } from '@/components/sign-in-with-github'
 
 export function SignInForm() {
   const form = useForm({
@@ -162,6 +163,8 @@ export function SignInForm() {
               </Button>
             )}
           />
+
+          <SignInWithGitHub />
         </Field>
       </CardFooter>
     </Card>
