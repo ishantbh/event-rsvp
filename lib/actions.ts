@@ -220,6 +220,24 @@ export async function requestPasswordResetAction(email: string) {
   })
 }
 
+export async function loginAction(email: string, password: string) {
+  const ip = await getIPFromHeaders()
+
+  const normalizedEmail = email.toLowerCase().trim()
+
+  await rateLimit(`login:ip:${ip}`, 5, 60) // 5 requests per minute per IP
+  await rateLimit(`login:email:${normalizedEmail}`, 5, 60) // 5 requests per minute per email
+
+  await auth.api.signInEmail({
+    body: {
+      email: normalizedEmail,
+      password,
+      rememberMe: true,
+    },
+    headers: await headers(),
+  })
+}
+
 async function getIPFromHeaders() {
   const headersList = await headers()
 
