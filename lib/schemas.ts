@@ -32,6 +32,9 @@ export const InviteRsvpFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.email(),
   attendance: z.enum(PrismaRsvpStatus),
+
+  // honeypot
+  organization: z.string().catch(''),
 })
 
 export const ResetPasswordFormSchema = z
