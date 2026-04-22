@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { authClient } from '@/lib/auth-client'
 import { SignInFormSchema } from '@/lib/schemas'
+import { loginAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -27,6 +28,8 @@ import { Input } from '@/components/ui/input'
 import { SignInWithGitHub } from '@/components/sign-in-with-github'
 
 export function SignInForm() {
+  const router = useRouter()
+
   const form = useForm({
     defaultValues: {
       email: '',
@@ -38,21 +41,17 @@ export function SignInForm() {
     onSubmit: async ({ value }) => {
       const { email, password } = value
 
-      await authClient.signIn.email(
-        {
-          email,
-          password,
-          callbackURL: '/dashboard',
-        },
-        {
-          onSuccess: () => {
-            toast.success('Sign in successful')
-          },
-          onError: (ctx) => {
-            toast.error(ctx.error.message)
-          },
-        },
-      )
+      try {
+        await loginAction(email, password)
+
+        toast.success('Sign in successful')
+
+        router.replace('/dashboard')
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : 'Something went wrong',
+        )
+      }
     },
   })
 
