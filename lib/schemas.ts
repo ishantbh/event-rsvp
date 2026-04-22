@@ -21,7 +21,7 @@ export const SignUpFormSchema = z
     path: ['confirmPassword'],
   })
 
-export const NewEventFormSchema = z.object({
+export const EventFormSchema = z.object({
   title: z.string().min(1, 'Name is required'),
   description: z.string(),
   location: z.string(),

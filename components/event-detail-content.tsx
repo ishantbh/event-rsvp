@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { PencilIcon } from 'lucide-react'
 
 import prisma from '@/lib/prisma'
 import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
@@ -6,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { EventInvite } from '@/components/event-invite'
 import { AttendeeList } from '@/components/attendee-list'
 import { DeleteEvent } from '@/components/delete-event'
+import { Button } from '@/components/ui/button'
 
 type EventDetailContentProps = {
   userId: string
@@ -80,7 +83,15 @@ export async function EventDetailContent({
             )}
           </div>
 
-          <DeleteEvent eventId={event.id} />
+          <div className='flex items-center gap-2'>
+            <Button variant='outline' size='icon-lg' asChild>
+              <Link href={`/events/${event.id}/edit`}>
+                <PencilIcon />
+              </Link>
+            </Button>
+
+            <DeleteEvent eventId={event.id} />
+          </div>
         </div>
 
         <div className='flex flex-wrap text-xs gap-2'>

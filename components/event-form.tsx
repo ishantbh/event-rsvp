@@ -5,8 +5,8 @@ import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { NewEventFormSchema } from '@/lib/schemas'
-import { createEventAction } from '@/lib/actions'
+import { EventFormSchema } from '@/lib/schemas'
+import { createEventAction, updateEventAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -25,26 +25,50 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
-export function NewEventForm() {
+type EventFormProps = {
+  event?: {
+    id: string
+    title: string
+    description?: string | null
+    location?: string | null
+    eventDate?: Date | null
+  }
+}
+
+export function EventForm({ event }: EventFormProps) {
   const router = useRouter()
 
   const form = useForm({
     defaultValues: {
-      title: '',
-      description: '',
-      location: '',
-      eventDate: '',
+      title: event?.title ?? '',
+      description: event?.description ?? '',
+      location: event?.location ?? '',
+      eventDate: event?.eventDate?.toLocaleString() ?? '',
     },
     validators: {
-      onSubmit: NewEventFormSchema,
+      onSubmit: EventFormSchema,
     },
     onSubmit: async ({ value }) => {
       try {
-        const eventId = await createEventAction(value)
+        if (event) {
+          // update event
+          const eventId = await updateEventAction({
+            id: event.id,
+            title: value.title,
+            description: value.description,
+            location: value.location,
+            eventDate: value.eventDate,
+          })
 
-        toast.success('Event created successfully')
+          toast.success('Event updated successfully')
+          router.push(`/events/${eventId}`)
+        } else {
+          // create event
+          const eventId = await createEventAction(value)
 
-        router.push(`/events/${eventId}`)
+          toast.success('Event created successfully')
+          router.push(`/events/${eventId}`)
+        }
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : 'Something went wrong',
@@ -56,11 +80,11 @@ export function NewEventForm() {
   return (
     <Card className='w-full max-w-md'>
       <CardHeader>
-        <CardTitle>Create Event</CardTitle>
+        <CardTitle>{event ? 'Edit Event' : 'Create Event'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form
-          id='create-event-form'
+          id='event-form'
           onSubmit={(e) => {
             e.preventDefault()
             form.handleSubmit()
@@ -178,18 +202,14 @@ export function NewEventForm() {
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button
-                type='submit'
-                form='create-event-form'
-                disabled={!canSubmit}
-              >
+              <Button type='submit' form='event-form' disabled={!canSubmit}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className='size-4 animate-spin' />
-                    <span>Creating...</span>
+                    <span>Submitting...</span>
                   </>
                 ) : (
-                  <span>Create Event</span>
+                  <span>Submit Event</span>
                 )}
               </Button>
             )}

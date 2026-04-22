@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
-import { InviteRsvpFormSchema, NewEventFormSchema } from '@/lib/schemas'
+import { InviteRsvpFormSchema, EventFormSchema } from '@/lib/schemas'
 
 export async function createEventAction({
   title,
@@ -28,7 +28,7 @@ export async function createEventAction({
 
   const userId = session.user.id
 
-  const res = NewEventFormSchema.safeParse({
+  const res = EventFormSchema.safeParse({
     title,
     description,
     location,
@@ -46,6 +46,57 @@ export async function createEventAction({
   const created = await prisma.event.create({
     data: {
       ownerUserId: userId,
+      title: res.data.title,
+      description: res.data.description || null,
+      location: res.data.location || null,
+      eventDate: normalizedEventDate,
+    },
+  })
+
+  return created.id
+}
+
+export async function updateEventAction({
+  id,
+  title,
+  description,
+  location,
+  eventDate,
+}: {
+  id: string
+  title: string
+  description?: string
+  location?: string
+  eventDate?: string
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    throw new Error('Unauthorized')
+  }
+
+  const userId = session.user.id
+
+  const res = EventFormSchema.safeParse({
+    title,
+    description,
+    location,
+    eventDate,
+  })
+
+  if (res.error) {
+    throw new Error(res.error.message)
+  }
+
+  const normalizedEventDate = res.data.eventDate
+    ? new Date(res.data.eventDate)
+    : null
+
+  const created = await prisma.event.update({
+    where: { ownerUserId: userId, id },
+    data: {
       title: res.data.title,
       description: res.data.description || null,
       location: res.data.location || null,

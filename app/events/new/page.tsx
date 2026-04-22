@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { NewEventForm } from '@/components/new-event-form'
+import { EventForm } from '@/components/event-form'
 
 export const metadata: Metadata = {
   title: 'New Event',
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function NewEventPage() {
   return (
     <div className='flex items-center justify-center flex-1'>
-      <NewEventForm />
+      <EventForm />
     </div>
   )
 }
