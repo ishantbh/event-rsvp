@@ -141,8 +141,19 @@ export async function createInviteAction(eventId: string) {
 
 export async function submitRsvpAction(
   token: string,
-  value: { name: string; email: string; attendance: string },
+  value: {
+    name: string
+    email: string
+    attendance: string
+    organization?: string
+  },
 ) {
+  if (value.organization) {
+    // honeypot
+    // bot detected
+    return
+  }
+
   const ip = await getIPFromHeaders()
 
   // Rate limit per IP
