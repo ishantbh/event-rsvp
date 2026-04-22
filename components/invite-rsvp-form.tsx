@@ -39,6 +39,7 @@ export function InviteRsvpForm({ token, submitted }: InviteRsvpFormProps) {
       name: '',
       email: '',
       attendance: '',
+      organization: '', // honeypot
     },
     validators: {
       onSubmit: InviteRsvpFormSchema,
@@ -152,6 +153,24 @@ export function InviteRsvpForm({ token, submitted }: InviteRsvpFormProps) {
                 </Select>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
+            )
+          }}
+        />
+
+        <form.Field
+          name='organization'
+          children={(field) => {
+            return (
+              <input
+                name={field.name}
+                value={field.state.value ?? ''}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                tabIndex={-1}
+                autoComplete='off'
+                className='absolute left-[-9999px]'
+                aria-hidden='true'
+              />
             )
           }}
         />
