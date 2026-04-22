@@ -56,6 +56,57 @@ export async function createEventAction({
   return created.id
 }
 
+export async function updateEventAction({
+  id,
+  title,
+  description,
+  location,
+  eventDate,
+}: {
+  id: string
+  title: string
+  description?: string
+  location?: string
+  eventDate?: string
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    throw new Error('Unauthorized')
+  }
+
+  const userId = session.user.id
+
+  const res = EventFormSchema.safeParse({
+    title,
+    description,
+    location,
+    eventDate,
+  })
+
+  if (res.error) {
+    throw new Error(res.error.message)
+  }
+
+  const normalizedEventDate = res.data.eventDate
+    ? new Date(res.data.eventDate)
+    : null
+
+  const created = await prisma.event.update({
+    where: { ownerUserId: userId, id },
+    data: {
+      title: res.data.title,
+      description: res.data.description || null,
+      location: res.data.location || null,
+      eventDate: normalizedEventDate,
+    },
+  })
+
+  return created.id
+}
+
 export async function createInviteAction(eventId: string) {
   const session = await auth.api.getSession({
     headers: await headers(),
