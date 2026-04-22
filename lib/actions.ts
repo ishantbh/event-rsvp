@@ -127,3 +127,19 @@ export async function submitRsvpAction(
     },
   })
 }
+
+export async function deleteEventAction(eventId: string) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    throw new Error('Unauthorized')
+  }
+
+  const userId = session.user.id
+
+  await prisma.event.delete({
+    where: { ownerUserId: userId, id: eventId },
+  })
+}
