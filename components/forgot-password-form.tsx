@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 
-import { authClient } from '@/lib/auth-client'
+import { requestPasswordResetAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -40,20 +40,14 @@ export function ForgotPasswordForm() {
     onSubmit: async ({ value }) => {
       const { email } = value
 
-      await authClient.requestPasswordReset(
-        {
-          email,
-          redirectTo: '/reset-password',
-        },
-        {
-          onSuccess: () => {
-            toast.success('Password reset link sent to your email')
-          },
-          onError: (ctx) => {
-            toast.error(ctx.error.message)
-          },
-        },
-      )
+      try {
+        await requestPasswordResetAction(email)
+        toast.success('Password reset link sent to your email')
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : 'Something went wrong',
+        )
+      }
     },
   })
 
