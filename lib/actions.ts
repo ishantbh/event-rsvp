@@ -204,6 +204,22 @@ export async function deleteEventAction(eventId: string) {
   })
 }
 
+export async function requestPasswordResetAction(email: string) {
+  const ip = await getIPFromHeaders()
+
+  const normalizedEmail = email.toLowerCase().trim()
+
+  await rateLimit(`forgot:ip:${ip}`, 5, 3600) // 5 requests per hour per IP
+  await rateLimit(`forgot:email:${normalizedEmail}`, 3, 3600) // 3 requests per hour per email
+
+  await auth.api.requestPasswordReset({
+    body: {
+      email: normalizedEmail,
+      redirectTo: '/reset-password',
+    },
+  })
+}
+
 async function getIPFromHeaders() {
   const headersList = await headers()
 
