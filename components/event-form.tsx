@@ -6,7 +6,7 @@ import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { EventFormSchema } from '@/lib/schemas'
-import { createEventAction } from '@/lib/actions'
+import { createEventAction, updateEventAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -29,9 +29,9 @@ type EventFormProps = {
   event?: {
     id: string
     title: string
-    description?: string
-    location?: string
-    eventDate?: string
+    description?: string | null
+    location?: string | null
+    eventDate?: Date | null
   }
 }
 
@@ -43,7 +43,7 @@ export function EventForm({ event }: EventFormProps) {
       title: event?.title ?? '',
       description: event?.description ?? '',
       location: event?.location ?? '',
-      eventDate: event?.eventDate ?? '',
+      eventDate: event?.eventDate?.toLocaleString() ?? '',
     },
     validators: {
       onSubmit: EventFormSchema,
@@ -52,12 +52,21 @@ export function EventForm({ event }: EventFormProps) {
       try {
         if (event) {
           // update event
+          const eventId = await updateEventAction({
+            id: event.id,
+            title: value.title,
+            description: value.description,
+            location: value.location,
+            eventDate: value.eventDate,
+          })
+
+          toast.success('Event updated successfully')
+          router.push(`/events/${eventId}`)
         } else {
           // create event
           const eventId = await createEventAction(value)
 
           toast.success('Event created successfully')
-
           router.push(`/events/${eventId}`)
         }
       } catch (error) {
