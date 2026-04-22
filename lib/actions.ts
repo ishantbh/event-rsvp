@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
-import { InviteRsvpFormSchema, NewEventFormSchema } from '@/lib/schemas'
+import { InviteRsvpFormSchema, EventFormSchema } from '@/lib/schemas'
 
 export async function createEventAction({
   title,
@@ -28,7 +28,7 @@ export async function createEventAction({
 
   const userId = session.user.id
 
-  const res = NewEventFormSchema.safeParse({
+  const res = EventFormSchema.safeParse({
     title,
     description,
     location,
