@@ -1,12 +1,11 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import prisma from '@/lib/prisma'
 import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { EventInvite } from '@/components/event-invite'
 import { AttendeeList } from '@/components/attendee-list'
+import { DeleteEvent } from '@/components/delete-event'
 
 type EventDetailContentProps = {
   userId: string
@@ -81,9 +80,7 @@ export async function EventDetailContent({
             )}
           </div>
 
-          <Button variant='outline' asChild>
-            <Link href='/dashboard'>Back</Link>
-          </Button>
+          <DeleteEvent eventId={event.id} />
         </div>
 
         <div className='flex flex-wrap text-xs gap-2'>
