@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { InviteRsvpFormSchema, EventFormSchema } from '@/lib/schemas'
+import { rateLimit } from '@/lib/rate-limit'
 
 export async function createEventAction({
   title,
@@ -142,6 +143,14 @@ export async function submitRsvpAction(
   token: string,
   value: { name: string; email: string; attendance: string },
 ) {
+  const ip = await getIPFromHeaders()
+
+  // Rate limit per IP
+  await rateLimit(`rsvp:ip:${ip}`, 10, 60)
+
+  // Rate limit per event
+  await rateLimit(`rsvp:event:${token}`, 100, 60)
+
   const res = InviteRsvpFormSchema.safeParse(value)
 
   if (res.error) {
@@ -193,4 +202,14 @@ export async function deleteEventAction(eventId: string) {
   await prisma.event.delete({
     where: { ownerUserId: userId, id: eventId },
   })
+}
+
+async function getIPFromHeaders() {
+  const headersList = await headers()
+
+  return (
+    headersList.get('x-forwarded-for')?.split(',')[0] ??
+    headersList.get('x-real-ip') ??
+    'unknown'
+  )
 }
