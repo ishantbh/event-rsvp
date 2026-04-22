@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { PencilIcon } from 'lucide-react'
 
 import prisma from '@/lib/prisma'
 import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
@@ -7,8 +9,6 @@ import { EventInvite } from '@/components/event-invite'
 import { AttendeeList } from '@/components/attendee-list'
 import { DeleteEvent } from '@/components/delete-event'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Pencil, PencilIcon } from 'lucide-react'
 
 type EventDetailContentProps = {
   userId: string
