@@ -104,12 +104,13 @@ export async function EventDetailContent({
           </Badge>
         </div>
 
+        <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
         {event.eventDate && event.eventDate.getTime() > Date.now() ? (
           <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
         ) : (
-          <div className='bg-destructive/10 p-2 rounded mb-2'>
-            <p className='text-destructive text-sm font-semibold'>
-              Event has already ended
+          <div className='mb-4 rounded-md border border-destructive/50 bg-destructive/10'>
+            <p className='p-3 text-destructive font-semibold text-sm'>
+              This event has already ended.
             </p>
           </div>
         )}

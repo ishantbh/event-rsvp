@@ -33,8 +33,8 @@ export function EventInvite({ eventId, inviteUrl }: EventInviteProps) {
     <Card className='max-w-2xl'>
       <CardHeader>
         {state.error && (
-          <div className='bg-destructive/10 p-2 rounded mb-2'>
-            <p className='text-destructive text-sm font-semibold'>
+          <div className='mb-4 rounded-md border border-destructive/50 bg-destructive/10'>
+            <p className='p-3 text-destructive font-semibold text-sm'>
               {state.error}
             </p>
           </div>
