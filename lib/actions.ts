@@ -182,11 +182,15 @@ export async function submitRsvpAction(
 
   const invite = await prisma.eventInvite.findUnique({
     where: { token },
-    select: { id: true, eventId: true },
+    select: { id: true, eventId: true, event: { select: { eventDate: true } } },
   })
 
   if (!invite) {
     throw new Error('Invite link is invalid.')
+  }
+
+  if (invite.event.eventDate && invite.event.eventDate.getTime() < Date.now()) {
+    throw new Error('Event has already ended.')
   }
 
   const emailNormalized = res.data.email.toLowerCase()
