@@ -104,7 +104,6 @@ export async function EventDetailContent({
           </Badge>
         </div>
 
-        <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
         {event.eventDate && event.eventDate.getTime() > Date.now() ? (
           <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
         ) : (
