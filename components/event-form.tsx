@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { formatDateTimeLocal } from '@/lib/utils'
 
 type EventFormProps = {
   event?: {
@@ -43,7 +44,7 @@ export function EventForm({ event }: EventFormProps) {
       title: event?.title ?? '',
       description: event?.description ?? '',
       location: event?.location ?? '',
-      eventDate: event?.eventDate?.toLocaleString() ?? '',
+      eventDate: event?.eventDate ? formatDateTimeLocal(event.eventDate) : '',
     },
     validators: {
       onSubmit: EventFormSchema,
