@@ -114,18 +114,28 @@ export async function createInviteAction(eventId: string) {
   })
 
   if (!session) {
-    throw new Error('Unauthorized')
+    return { error: 'Unauthorized' }
   }
 
   const userId = session.user.id
 
   const event = await prisma.event.findUnique({
     where: { ownerUserId: userId, id: eventId },
-    select: { id: true },
+    select: { id: true, eventDate: true },
   })
 
   if (!event) {
-    throw new Error('Event not found')
+    return { error: 'Event not found' }
+  }
+
+  if (event.eventDate && event.eventDate.getTime() < Date.now()) {
+    await prisma.eventInvite.deleteMany({
+      where: { eventId },
+    })
+
+    revalidatePath(`/events/${eventId}`)
+
+    return { error: 'Event has already ended' }
   }
 
   const token = crypto.randomUUID().replace(/-/g, '')
@@ -137,6 +147,8 @@ export async function createInviteAction(eventId: string) {
   })
 
   revalidatePath(`/events/${eventId}`)
+
+  return { error: null }
 }
 
 export async function submitRsvpAction(
@@ -170,11 +182,15 @@ export async function submitRsvpAction(
 
   const invite = await prisma.eventInvite.findUnique({
     where: { token },
-    select: { id: true, eventId: true },
+    select: { id: true, eventId: true, event: { select: { eventDate: true } } },
   })
 
   if (!invite) {
     throw new Error('Invite link is invalid.')
+  }
+
+  if (invite.event.eventDate && invite.event.eventDate.getTime() < Date.now()) {
+    throw new Error('Event has already ended.')
   }
 
   const emailNormalized = res.data.email.toLowerCase()

@@ -32,6 +32,7 @@ export async function DashboardContent({ userId }: DashboardContentProps) {
       },
       { going: 0, maybe: 0, not_going: 0 } as Record<PrismaRsvpStatus, number>,
     ),
+    active: !row.eventDate || row.eventDate.getTime() > Date.now(),
   }))
 
   return (

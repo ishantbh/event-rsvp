@@ -62,7 +62,15 @@ export async function InviteRsvpContent({
             </p>
           )}
 
-          <InviteRsvpForm token={token} submitted={submitted} />
+          {event.eventDate && event.eventDate.getTime() > Date.now() ? (
+            <InviteRsvpForm token={token} submitted={submitted} />
+          ) : (
+            <div className='mb-4 rounded-md border border-destructive/50 bg-destructive/10'>
+              <p className='p-3 text-destructive font-semibold text-sm'>
+                This event has already ended.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
