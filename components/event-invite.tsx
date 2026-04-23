@@ -1,3 +1,5 @@
+'use client'
+
 import { createInviteAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,6 +10,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { InviteLink } from '@/components/invite-link'
+import { useActionState, useEffect } from 'react'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 type EventInviteProps = {
   eventId: string
@@ -15,11 +20,25 @@ type EventInviteProps = {
 }
 
 export function EventInvite({ eventId, inviteUrl }: EventInviteProps) {
+  const initialState = { error: null }
+
   const createInviteActionForEvent = createInviteAction.bind(null, eventId)
+
+  const [state, formAction, pending] = useActionState(
+    createInviteActionForEvent,
+    initialState,
+  )
 
   return (
     <Card className='max-w-2xl'>
       <CardHeader>
+        {state.error && (
+          <div className='bg-destructive/10 p-2 rounded mb-2'>
+            <p className='text-destructive text-sm font-semibold'>
+              {state.error}
+            </p>
+          </div>
+        )}
         <CardTitle>Invite Link</CardTitle>
         <CardDescription>
           Share this link with guests so they can RSVP without creating an
@@ -29,8 +48,10 @@ export function EventInvite({ eventId, inviteUrl }: EventInviteProps) {
       <CardContent className='space-y-3'>
         <InviteLink inviteUrl={inviteUrl} />
 
-        <form action={createInviteActionForEvent}>
-          <Button>Generate Link</Button>
+        <form action={formAction}>
+          <Button type='submit' disabled={pending}>
+            {pending ? <Loader2 className='animate-spin' /> : 'Generate Link'}
+          </Button>
         </form>
       </CardContent>
     </Card>
