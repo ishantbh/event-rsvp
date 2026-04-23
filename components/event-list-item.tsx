@@ -4,6 +4,7 @@ import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 type EventListItemProps = {
   event: {
@@ -12,6 +13,7 @@ type EventListItemProps = {
     location: string | null
     eventDate: Date | null
     eventRsvps: Record<PrismaRsvpStatus, number>
+    active: boolean
   }
 }
 
@@ -20,9 +22,12 @@ export function EventListItem({ event }: EventListItemProps) {
 
   return (
     <li>
-      <Card>
+      <Card className={cn(!event.active && 'opacity-60')}>
         <CardHeader className='space-y-3'>
-          <CardTitle className='text-lg'>{event.title}</CardTitle>
+          <CardTitle className='text-lg flex gap-3 items-center'>
+            <span>{event.title}</span>
+            {!event.active && <Badge variant='destructive'>Ended</Badge>}
+          </CardTitle>
 
           <CardAction>
             <Button size='sm' asChild>
