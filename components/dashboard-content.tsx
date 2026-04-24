@@ -8,9 +8,21 @@ import { EventListItem } from '@/components/event-list-item'
 
 type DashboardContentProps = {
   userId: string
+  currentPage: number
 }
 
-export async function DashboardContent({ userId }: DashboardContentProps) {
+const EVENTS_PER_PAGE = 10
+
+export async function DashboardContent({
+  userId,
+  currentPage,
+}: DashboardContentProps) {
+  const eventsCount = await prisma.event.count({
+    where: { ownerUserId: userId },
+  })
+
+  const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
+
   const rows = await prisma.event.findMany({
     where: { ownerUserId: userId },
     orderBy: { createdAt: 'desc' },
@@ -21,6 +33,8 @@ export async function DashboardContent({ userId }: DashboardContentProps) {
       eventDate: true,
       eventRsvps: { select: { status: true } },
     },
+    skip: (currentPage - 1) * EVENTS_PER_PAGE,
+    take: EVENTS_PER_PAGE,
   })
 
   const events = rows.map((row) => ({
