@@ -5,6 +5,7 @@ import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { Button } from '@/components/ui/button'
 import { NoEvents } from '@/components/no-events'
 import { EventListItem } from '@/components/event-list-item'
+import { DashboardPagination } from '@/components/dashboard-pagination'
 
 type DashboardContentProps = {
   userId: string
@@ -68,11 +69,15 @@ export async function DashboardContent({
       {events.length === 0 ? (
         <NoEvents />
       ) : (
-        <ul className='grid gap-4 md:grid-cols-2'>
-          {events.map((event) => (
-            <EventListItem key={event.id} event={event} />
-          ))}
-        </ul>
+        <>
+          <ul className='grid gap-4 md:grid-cols-2'>
+            {events.map((event) => (
+              <EventListItem key={event.id} event={event} />
+            ))}
+          </ul>
+
+          <DashboardPagination totalPages={totalPages} />
+        </>
       )}
     </div>
   )
