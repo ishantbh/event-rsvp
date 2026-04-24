@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   title: 'Dashboard',
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage(props: {
+  searchParams?: Promise<{ page?: string }>
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -18,5 +20,8 @@ export default async function DashboardPage() {
     return <Unauthorized />
   }
 
-  return <DashboardContent userId={session.user.id} />
+  const searchParams = await props.searchParams
+  const currentPage = Number(searchParams?.page) || 1
+
+  return <DashboardContent userId={session.user.id} currentPage={currentPage} />
 }

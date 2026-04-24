@@ -5,12 +5,25 @@ import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
 import { Button } from '@/components/ui/button'
 import { NoEvents } from '@/components/no-events'
 import { EventListItem } from '@/components/event-list-item'
+import { DashboardPagination } from '@/components/dashboard-pagination'
 
 type DashboardContentProps = {
   userId: string
+  currentPage: number
 }
 
-export async function DashboardContent({ userId }: DashboardContentProps) {
+const EVENTS_PER_PAGE = 10
+
+export async function DashboardContent({
+  userId,
+  currentPage,
+}: DashboardContentProps) {
+  const eventsCount = await prisma.event.count({
+    where: { ownerUserId: userId },
+  })
+
+  const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
+
   const rows = await prisma.event.findMany({
     where: { ownerUserId: userId },
     orderBy: { createdAt: 'desc' },
@@ -21,6 +34,8 @@ export async function DashboardContent({ userId }: DashboardContentProps) {
       eventDate: true,
       eventRsvps: { select: { status: true } },
     },
+    skip: (currentPage - 1) * EVENTS_PER_PAGE,
+    take: EVENTS_PER_PAGE,
   })
 
   const events = rows.map((row) => ({
@@ -54,11 +69,15 @@ export async function DashboardContent({ userId }: DashboardContentProps) {
       {events.length === 0 ? (
         <NoEvents />
       ) : (
-        <ul className='grid gap-4 md:grid-cols-2'>
-          {events.map((event) => (
-            <EventListItem key={event.id} event={event} />
-          ))}
-        </ul>
+        <>
+          <ul className='grid gap-4 md:grid-cols-2'>
+            {events.map((event) => (
+              <EventListItem key={event.id} event={event} />
+            ))}
+          </ul>
+
+          <DashboardPagination totalPages={totalPages} />
+        </>
       )}
     </div>
   )
