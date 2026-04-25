@@ -47,6 +47,8 @@ export async function DashboardContent({
     take: EVENTS_PER_PAGE,
   })
 
+  const now = Date.now()
+
   const events = rows.map((row) => ({
     ...row,
     eventRsvps: row.eventRsvps.reduce(
@@ -56,7 +58,7 @@ export async function DashboardContent({
       },
       { going: 0, maybe: 0, not_going: 0 } as Record<PrismaRsvpStatus, number>,
     ),
-    active: !row.eventDate || row.eventDate.getTime() > Date.now(),
+    active: !row.eventDate || row.eventDate.getTime() > now,
   }))
 
   return (
