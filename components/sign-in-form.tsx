@@ -26,9 +26,11 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { SignInWithGitHub } from '@/components/sign-in-with-github'
+import { authClient } from '@/lib/auth-client'
 
 export function SignInForm() {
   const router = useRouter()
+  const { refetch } = authClient.useSession()
 
   const form = useForm({
     defaultValues: {
@@ -46,7 +48,9 @@ export function SignInForm() {
 
         toast.success('Sign in successful')
 
-        router.replace('/dashboard')
+        await refetch()
+
+        router.push('/dashboard')
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : 'Something went wrong',
