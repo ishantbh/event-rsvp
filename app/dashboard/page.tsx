@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DashboardPage(props: {
-  searchParams?: Promise<{ page?: string }>
+  searchParams?: Promise<{ query?: string; page?: string }>
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -21,7 +21,14 @@ export default async function DashboardPage(props: {
   }
 
   const searchParams = await props.searchParams
+  const query = searchParams?.query?.trim()
   const currentPage = Number(searchParams?.page) || 1
 
-  return <DashboardContent userId={session.user.id} currentPage={currentPage} />
+  return (
+    <DashboardContent
+      userId={session.user.id}
+      query={query}
+      currentPage={currentPage}
+    />
+  )
 }

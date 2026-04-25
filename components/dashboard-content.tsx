@@ -9,6 +9,7 @@ import { DashboardPagination } from '@/components/dashboard-pagination'
 
 type DashboardContentProps = {
   userId: string
+  query: string | undefined
   currentPage: number
 }
 
@@ -16,6 +17,7 @@ const EVENTS_PER_PAGE = 10
 
 export async function DashboardContent({
   userId,
+  query,
   currentPage,
 }: DashboardContentProps) {
   const eventsCount = await prisma.event.count({
