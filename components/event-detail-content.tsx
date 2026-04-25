@@ -104,7 +104,7 @@ export async function EventDetailContent({
           </Badge>
         </div>
 
-        {event.eventDate && event.eventDate.getTime() > Date.now() ? (
+        {!event.eventDate || event.eventDate.getTime() > Date.now() ? (
           <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
         ) : (
           <div className='mb-4 rounded-md border border-destructive/50 bg-destructive/10'>
