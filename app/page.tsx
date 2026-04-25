@@ -1,3 +1,7 @@
+import { headers } from 'next/headers'
+import Link from 'next/link'
+
+import { auth } from '@/auth'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,9 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import Link from 'next/link'
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
   return (
     <div className='flex flex-1 flex-col gap-6'>
       <section className='space-y-4'>
@@ -22,15 +29,20 @@ export default function Home() {
           update with Going, Maybe, and Not going counts
         </p>
         <div className='flex flex-wrap gap-3'>
-          <Button asChild>
-            <Link href='/sign-up'>Create account</Link>
-          </Button>
-          <Button variant='secondary' asChild>
-            <Link href='/sign-in'>Sign in</Link>
-          </Button>
-          <Button variant='outline' asChild>
-            <Link href='/dashboard'>Open dashboard</Link>
-          </Button>
+          {session ? (
+            <Button variant='outline' asChild>
+              <Link href='/dashboard'>Open dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild>
+                <Link href='/sign-up'>Create account</Link>
+              </Button>
+              <Button variant='secondary' asChild>
+                <Link href='/sign-in'>Sign in</Link>
+              </Button>
+            </>
+          )}
         </div>
       </section>
 
