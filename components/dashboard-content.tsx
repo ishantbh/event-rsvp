@@ -78,7 +78,7 @@ export async function DashboardContent({
 
       {/* Your events */}
       {events.length === 0 ? (
-        <NoEvents />
+        <NoEvents query={query} />
       ) : (
         <>
           <ul className='grid gap-4 md:grid-cols-2'>
