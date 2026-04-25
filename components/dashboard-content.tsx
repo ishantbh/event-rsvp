@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button'
 import { NoEvents } from '@/components/no-events'
 import { EventListItem } from '@/components/event-list-item'
 import { DashboardPagination } from '@/components/dashboard-pagination'
+import { DashboardSearch } from '@/components/dashboard-search'
 
 type DashboardContentProps = {
   userId: string
+  query: string | undefined
   currentPage: number
 }
 
@@ -16,16 +18,23 @@ const EVENTS_PER_PAGE = 10
 
 export async function DashboardContent({
   userId,
+  query,
   currentPage,
 }: DashboardContentProps) {
   const eventsCount = await prisma.event.count({
-    where: { ownerUserId: userId },
+    where: {
+      ownerUserId: userId,
+      ...(query && { title: { contains: query, mode: 'insensitive' } }),
+    },
   })
 
   const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
 
   const rows = await prisma.event.findMany({
-    where: { ownerUserId: userId },
+    where: {
+      ownerUserId: userId,
+      ...(query && { title: { contains: query, mode: 'insensitive' } }),
+    },
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
@@ -65,9 +74,11 @@ export async function DashboardContent({
         </Button>
       </div>
 
+      <DashboardSearch count={eventsCount} />
+
       {/* Your events */}
       {events.length === 0 ? (
-        <NoEvents />
+        <NoEvents query={query} />
       ) : (
         <>
           <ul className='grid gap-4 md:grid-cols-2'>
