@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { NoEvents } from '@/components/no-events'
 import { EventListItem } from '@/components/event-list-item'
 import { DashboardPagination } from '@/components/dashboard-pagination'
+import { DashboardSearch } from '@/components/dashboard-search'
 
 type DashboardContentProps = {
   userId: string
@@ -72,6 +73,8 @@ export async function DashboardContent({
           <Link href='/events/new'>Create event</Link>
         </Button>
       </div>
+
+      <DashboardSearch count={eventsCount} />
 
       {/* Your events */}
       {events.length === 0 ? (
