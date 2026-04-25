@@ -21,13 +21,19 @@ export async function DashboardContent({
   currentPage,
 }: DashboardContentProps) {
   const eventsCount = await prisma.event.count({
-    where: { ownerUserId: userId },
+    where: {
+      ownerUserId: userId,
+      ...(query && { title: { contains: query, mode: 'insensitive' } }),
+    },
   })
 
   const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
 
   const rows = await prisma.event.findMany({
-    where: { ownerUserId: userId },
+    where: {
+      ownerUserId: userId,
+      ...(query && { title: { contains: query, mode: 'insensitive' } }),
+    },
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
