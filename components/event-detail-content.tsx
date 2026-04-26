@@ -30,6 +30,7 @@ export async function EventDetailContent({
       description: true,
       location: true,
       eventDate: true,
+      capacity: true,
       invite: { select: { token: true } },
       eventRsvps: {
         orderBy: { respondedAt: 'desc' },
@@ -39,6 +40,11 @@ export async function EventDetailContent({
           email: true,
           status: true,
           respondedAt: true,
+        },
+      },
+      _count: {
+        select: {
+          eventRsvps: true,
         },
       },
     },
@@ -60,6 +66,7 @@ export async function EventDetailContent({
     inviteUrl: row.invite?.token
       ? `${process.env.NEXT_PUBLIC_APP_URL || ''}/invites/${row.invite.token}`
       : null,
+    totalRsvpCount: row._count.eventRsvps,
   }
 
   return (
@@ -75,6 +82,12 @@ export async function EventDetailContent({
               {event.eventDate?.toLocaleString() ?? 'No date selected'}
               {event.location ? ` - ${event.location}` : ''}
             </p>
+
+            {event.capacity && (
+              <p>
+                Capacity: <strong>{event.capacity}</strong>
+              </p>
+            )}
 
             {event.description && (
               <p className='max-w-2xl text-sm text-muted-foreground'>
@@ -103,6 +116,14 @@ export async function EventDetailContent({
             Not Going: {event.eventRsvpCounts.not_going}
           </Badge>
         </div>
+
+        {event.capacity && event.totalRsvpCount >= event.capacity && (
+          <div className='rounded-md border border-amber-400/50 bg-amber-400/10'>
+            <p className='p-3 text-amber-400 font-semibold text-sm'>
+              This event is full.
+            </p>
+          </div>
+        )}
 
         {!event.eventDate || event.eventDate.getTime() > Date.now() ? (
           <EventInvite eventId={event.id} inviteUrl={event.inviteUrl} />
