@@ -13,11 +13,13 @@ export async function createEventAction({
   description,
   location,
   eventDate,
+  capacity,
 }: {
   title: string
   description?: string
   location?: string
   eventDate?: string
+  capacity?: string
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -34,6 +36,7 @@ export async function createEventAction({
     description,
     location,
     eventDate,
+    capacity,
   })
 
   if (res.error) {
@@ -51,6 +54,7 @@ export async function createEventAction({
       description: res.data.description || null,
       location: res.data.location || null,
       eventDate: normalizedEventDate,
+      capacity: res.data.capacity,
     },
   })
 
@@ -63,12 +67,14 @@ export async function updateEventAction({
   description,
   location,
   eventDate,
+  capacity,
 }: {
   id: string
   title: string
   description?: string
   location?: string
   eventDate?: string
+  capacity?: string
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -85,6 +91,7 @@ export async function updateEventAction({
     description,
     location,
     eventDate,
+    capacity,
   })
 
   if (res.error) {
@@ -102,6 +109,7 @@ export async function updateEventAction({
       description: res.data.description || null,
       location: res.data.location || null,
       eventDate: normalizedEventDate,
+      capacity: res.data.capacity,
     },
   })
 
@@ -182,7 +190,11 @@ export async function submitRsvpAction(
 
   const invite = await prisma.eventInvite.findUnique({
     where: { token },
-    select: { id: true, eventId: true, event: { select: { eventDate: true } } },
+    select: {
+      id: true,
+      eventId: true,
+      event: { select: { eventDate: true, capacity: true } },
+    },
   })
 
   if (!invite) {
@@ -191,6 +203,14 @@ export async function submitRsvpAction(
 
   if (invite.event.eventDate && invite.event.eventDate.getTime() < Date.now()) {
     throw new Error('Event has already ended.')
+  }
+
+  const rsvpCount = await prisma.eventRsvp.count({
+    where: { eventId: invite.eventId },
+  })
+
+  if (invite.event.capacity && invite.event.capacity <= rsvpCount) {
+    throw new Error('Event is full.')
   }
 
   const emailNormalized = res.data.email.toLowerCase()

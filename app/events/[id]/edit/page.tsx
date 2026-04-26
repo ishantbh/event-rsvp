@@ -34,6 +34,7 @@ export default async function EditEventPage({
       description: true,
       location: true,
       eventDate: true,
+      capacity: true,
     },
   })
 
