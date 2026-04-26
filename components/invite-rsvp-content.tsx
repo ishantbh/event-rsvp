@@ -30,6 +30,12 @@ export async function InviteRsvpContent({
           description: true,
           location: true,
           eventDate: true,
+          capacity: true,
+          _count: {
+            select: {
+              eventRsvps: true,
+            },
+          },
         },
       },
     },
@@ -62,7 +68,15 @@ export async function InviteRsvpContent({
             </p>
           )}
 
-          {event.eventDate && event.eventDate.getTime() > Date.now() ? (
+          {event.capacity && event._count.eventRsvps >= event.capacity && (
+            <div className='mb-4 rounded-md border border-amber-400/50 bg-amber-400/10'>
+              <p className='p-3 text-amber-400 font-semibold text-sm'>
+                This event is full.
+              </p>
+            </div>
+          )}
+
+          {!event.eventDate || event.eventDate.getTime() > Date.now() ? (
             <InviteRsvpForm token={token} submitted={submitted} />
           ) : (
             <div className='mb-4 rounded-md border border-destructive/50 bg-destructive/10'>
