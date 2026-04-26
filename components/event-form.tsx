@@ -33,6 +33,7 @@ type EventFormProps = {
     description?: string | null
     location?: string | null
     eventDate?: Date | null
+    capacity?: number | null
   }
 }
 
@@ -45,6 +46,7 @@ export function EventForm({ event }: EventFormProps) {
       description: event?.description ?? '',
       location: event?.location ?? '',
       eventDate: event?.eventDate ? formatDateTimeLocal(event.eventDate) : '',
+      capacity: event?.capacity?.toString() ?? '',
     },
     validators: {
       onSubmit: EventFormSchema,
@@ -55,10 +57,7 @@ export function EventForm({ event }: EventFormProps) {
           // update event
           const eventId = await updateEventAction({
             id: event.id,
-            title: value.title,
-            description: value.description,
-            location: value.location,
-            eventDate: value.eventDate,
+            ...value,
           })
 
           toast.success('Event updated successfully')
@@ -164,6 +163,35 @@ export function EventForm({ event }: EventFormProps) {
                 )
               }}
             />
+
+            <form.Field
+              name='capacity'
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Capacity</FieldLabel>
+                    <Input
+                      type='number'
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder='1000'
+                      min='1'
+                      max='10000'
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )
+              }}
+            />
+
             <form.Field
               name='eventDate'
               children={(field) => {
