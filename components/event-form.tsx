@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 
 import { EventFormSchema } from '@/lib/schemas'
 import { createEventAction, updateEventAction } from '@/lib/actions'
+import { formatDateTimeLocal } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -24,7 +25,6 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { formatDateTimeLocal } from '@/lib/utils'
 
 type EventFormProps = {
   event?: {
