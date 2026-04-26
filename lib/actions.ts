@@ -13,11 +13,13 @@ export async function createEventAction({
   description,
   location,
   eventDate,
+  capacity,
 }: {
   title: string
   description?: string
   location?: string
   eventDate?: string
+  capacity?: string
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -34,6 +36,7 @@ export async function createEventAction({
     description,
     location,
     eventDate,
+    capacity,
   })
 
   if (res.error) {
@@ -51,6 +54,7 @@ export async function createEventAction({
       description: res.data.description || null,
       location: res.data.location || null,
       eventDate: normalizedEventDate,
+      capacity: res.data.capacity,
     },
   })
 
