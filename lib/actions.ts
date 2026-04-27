@@ -188,50 +188,60 @@ export async function submitRsvpAction(
     throw new Error(res.error.message)
   }
 
-  const invite = await prisma.eventInvite.findUnique({
-    where: { token },
-    select: {
-      id: true,
-      eventId: true,
-      event: { select: { eventDate: true, capacity: true } },
-    },
-  })
+  const { name, email, attendance: status } = res.data
 
-  if (!invite) {
-    throw new Error('Invite link is invalid.')
-  }
+  const emailNormalized = email.toLowerCase()
 
-  if (invite.event.eventDate && invite.event.eventDate.getTime() < Date.now()) {
-    throw new Error('Event has already ended.')
-  }
+  await prisma.$transaction(async (tx) => {
+    // Use the unique token to find the invite and the corresponding event
+    const invite = await tx.eventInvite.findUnique({
+      where: { token },
+      select: {
+        id: true,
+        event: { select: { id: true, eventDate: true, capacity: true } },
+      },
+    })
 
-  const rsvpCount = await prisma.eventRsvp.count({
-    where: { eventId: invite.eventId },
-  })
+    if (!invite) {
+      throw new Error('Invite link is invalid.')
+    }
 
-  if (invite.event.capacity && invite.event.capacity <= rsvpCount) {
-    throw new Error('Event is full.')
-  }
+    const { id: eventId, eventDate, capacity } = invite.event
 
-  const emailNormalized = res.data.email.toLowerCase()
+    // Check if the event has already ended (only if user has set an event date)
+    if (eventDate && eventDate.getTime() < Date.now()) {
+      throw new Error('Event has already ended.')
+    }
 
-  await prisma.eventRsvp.upsert({
-    where: {
-      eventId_emailNormalized: { eventId: invite.eventId, emailNormalized },
-    },
-    create: {
-      eventId: invite.eventId,
-      inviteId: invite.id,
-      name: res.data.name,
-      email: res.data.email,
-      emailNormalized,
-      status: res.data.attendance,
-    },
-    update: {
-      name: res.data.name,
-      status: res.data.attendance,
-      respondedAt: new Date(),
-    },
+    const rsvpCount = await tx.eventRsvp.count({
+      where: { eventId },
+    })
+
+    // Check if the event is full
+    // Also enforce an upper limit of 10_000 attendees per event
+    if (rsvpCount >= 10_000 || (capacity && capacity <= rsvpCount)) {
+      throw new Error('Event is full.')
+    }
+
+    // Create/update RSVP using event id and normalized email as key
+    await tx.eventRsvp.upsert({
+      where: {
+        eventId_emailNormalized: { eventId, emailNormalized },
+      },
+      create: {
+        eventId,
+        inviteId: invite.id,
+        name,
+        email,
+        emailNormalized,
+        status,
+      },
+      update: {
+        name,
+        status,
+        respondedAt: new Date(),
+      },
+    })
   })
 }
 
