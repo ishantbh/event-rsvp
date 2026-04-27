@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 import prisma from '@/lib/prisma'
 import { RsvpStatus as PrismaRsvpStatus } from '@/lib/generated/prisma/enums'
@@ -47,6 +48,10 @@ export async function DashboardContent({
   ])
 
   const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
+
+  if (currentPage > totalPages) {
+    redirect('/dashboard')
+  }
 
   const now = Date.now()
 
