@@ -127,36 +127,40 @@ export async function createInviteAction(eventId: string) {
 
   const userId = session.user.id
 
-  const event = await prisma.event.findUnique({
-    where: { ownerUserId: userId, id: eventId },
-    select: { id: true, eventDate: true },
-  })
+  return await prisma.$transaction(async (tx) => {
+    const event = await tx.event.findUnique({
+      where: { ownerUserId: userId, id: eventId },
+      select: { eventDate: true },
+    })
 
-  if (!event) {
-    return { error: 'Event not found' }
-  }
+    if (!event) {
+      return { error: 'Event not found' }
+    }
 
-  if (event.eventDate && event.eventDate.getTime() < Date.now()) {
-    await prisma.eventInvite.deleteMany({
+    // If event ended, delete the invite and revalidate the page
+    if (event.eventDate && event.eventDate.getTime() < Date.now()) {
+      await tx.eventInvite.deleteMany({
+        where: { eventId },
+      })
+
+      revalidatePath(`/events/${eventId}`)
+
+      return { error: 'Event has already ended' }
+    }
+
+    // Unique invite token
+    const token = crypto.randomUUID().replace(/-/g, '')
+
+    await tx.eventInvite.upsert({
       where: { eventId },
+      create: { eventId, token },
+      update: { token },
     })
 
     revalidatePath(`/events/${eventId}`)
 
-    return { error: 'Event has already ended' }
-  }
-
-  const token = crypto.randomUUID().replace(/-/g, '')
-
-  await prisma.eventInvite.upsert({
-    where: { eventId },
-    create: { eventId, token },
-    update: { token },
+    return { error: null }
   })
-
-  revalidatePath(`/events/${eventId}`)
-
-  return { error: null }
 }
 
 export async function submitRsvpAction(
