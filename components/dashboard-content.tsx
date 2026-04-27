@@ -21,31 +21,32 @@ export async function DashboardContent({
   query,
   currentPage,
 }: DashboardContentProps) {
-  const eventsCount = await prisma.event.count({
-    where: {
-      ownerUserId: userId,
-      ...(query && { title: { contains: query, mode: 'insensitive' } }),
-    },
-  })
+  const [rows, eventsCount] = await prisma.$transaction([
+    prisma.event.findMany({
+      where: {
+        ownerUserId: userId,
+        ...(query && { title: { contains: query, mode: 'insensitive' } }),
+      },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        location: true,
+        eventDate: true,
+        eventRsvps: { select: { status: true } },
+      },
+      skip: (currentPage - 1) * EVENTS_PER_PAGE,
+      take: EVENTS_PER_PAGE,
+    }),
+    prisma.event.count({
+      where: {
+        ownerUserId: userId,
+        ...(query && { title: { contains: query, mode: 'insensitive' } }),
+      },
+    }),
+  ])
 
   const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
-
-  const rows = await prisma.event.findMany({
-    where: {
-      ownerUserId: userId,
-      ...(query && { title: { contains: query, mode: 'insensitive' } }),
-    },
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      title: true,
-      location: true,
-      eventDate: true,
-      eventRsvps: { select: { status: true } },
-    },
-    skip: (currentPage - 1) * EVENTS_PER_PAGE,
-    take: EVENTS_PER_PAGE,
-  })
 
   const now = Date.now()
 
