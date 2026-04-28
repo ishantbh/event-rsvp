@@ -242,3 +242,4 @@ pnpm dev
 - [Events Manager with Next.js and Prisma](https://youtu.be/gh2L-nNXDsY)
 - [Better-Auth + GitHub OAuth](https://better-auth.com/docs/authentication/github)
 - [Send emails with Next.js](https://resend.com/docs/send-with-nextjs)
+- [Connect from Prisma to Neon](https://neon.com/docs/guides/prisma)
