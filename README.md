@@ -134,7 +134,12 @@ pnpm install
 ```
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
+# Pooled connection for application
 DATABASE_URL=
+
+# Direct connection for prisma cli
+DIRECT_URL=
+
 REDIS_URL=
 
 BETTER_AUTH_SECRET=
