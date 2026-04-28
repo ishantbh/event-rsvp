@@ -19,16 +19,16 @@ export default async function Home() {
 
   return (
     <div className='flex flex-1 flex-col gap-6'>
-      <section className='space-y-4'>
+      <section className='space-y-4 text-center md:text-start'>
         <Badge variant='secondary'>Next.js 16 + Better Auth + Prisma</Badge>
         <h1 className='text-4xl font-semibold tracking-tight'>
           Plan events and track RSVPs fast
         </h1>
-        <p className='max-w-2xl text-muted-foreground'>
+        <p className='max-w-2xl mx-auto md:mx-0 text-muted-foreground'>
           Create events, share a unique invite link, and watch attendee status
           update with Going, Maybe, and Not going counts
         </p>
-        <div className='flex flex-wrap gap-3'>
+        <div className='flex flex-wrap items-center justify-center md:justify-start gap-3'>
           {session ? (
             <Button variant='outline' asChild>
               <Link href='/dashboard'>Open dashboard</Link>
