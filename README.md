@@ -5,6 +5,7 @@ Create, manage, and RSVP for events
 ## 📑 Table of Contents
 
 - [Overview](#overview)
+  - [Demo Link](#demo-link)
   - [Screenshots](#screenshots)
   - [Features](#features)
   - [Run Locally](#run-locally)
@@ -20,6 +21,10 @@ Create, manage, and RSVP for events
 A full-stack event management and RSVP system that allows users to create & manage events, generate unique invite links, and collect/update RSVPs without requiring attendees to create an account.
 
 Built with a focus on real-world product flows, authentication, security, and scalable backend design.
+
+### Demo Link
+
+- Live Demo: [https://yestogo.netlify.app/](https://yestogo.netlify.app/)
 
 ### Screenshots
 
