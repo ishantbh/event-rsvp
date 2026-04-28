@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma'
 import { sendResetEmail } from '@/lib/mail'
 
 export const auth = betterAuth({
+  trustedOrigins: ['https://yestogo.netlify.app'],
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
