@@ -49,7 +49,8 @@ export async function DashboardContent({
 
   const totalPages = Math.ceil(eventsCount / EVENTS_PER_PAGE)
 
-  if (currentPage > totalPages) {
+  // Redirect to dashboard if user tries to access a page number in searchparams that doesn't exist
+  if (totalPages > 0 && currentPage > totalPages) {
     redirect('/dashboard')
   }
 
