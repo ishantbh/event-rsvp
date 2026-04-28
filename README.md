@@ -5,6 +5,7 @@ Create, manage, and RSVP for events
 ## 📑 Table of Contents
 
 - [Overview](#overview)
+  - [Screenshots](#screenshots)
   - [Features](#features)
   - [Run Locally](#run-locally)
 - [My Process](#my-process)
@@ -19,6 +20,43 @@ Create, manage, and RSVP for events
 A full-stack event management and RSVP system that allows users to create & manage events, generate unique invite links, and collect/update RSVPs without requiring attendees to create an account.
 
 Built with a focus on real-world product flows, authentication, security, and scalable backend design.
+
+### Screenshots
+
+<p align='center'>
+  <img src="screenshots/home-page.png" width="45%" alt='Landing page' />
+</p>
+
+<p align="center">
+  <img src="screenshots/sign-in.png" width="30%" alt='Sign in page' />
+  <img src="screenshots/sign-up.png" width="30%" alt='Sign up page' />
+  <img src="screenshots/forgot-pass.png" width="30%" alt='Forgot password page' />
+</p>
+
+<p align="center">
+  <img src="screenshots/reset-pass.png" width="30%" alt='Reset password page' />
+  <img src="screenshots/rsvp-form.png" width="30%" alt='RSVP form' />
+  <img src="screenshots/rsvp-form-submitted.png" width="30%" alt='RSVP form submitted' />
+</p>
+
+<p align='center'>
+  <img src="screenshots/dashboard.png" width="90%" alt='Dashboard' />
+</p>
+
+<p align="center">
+  <img src="screenshots/search.png" width="45%" alt='Searching' />
+  <img src="screenshots/pagination.png" width="45%" alt='Pagination' />
+</p>
+
+<p align="center">
+  <img src="screenshots/event-details.png" width="45%" alt='Event details page' />
+  <img src="screenshots/event-details-light.png" width="45%" alt='Event details page in light theme' />
+</p>
+
+<p align="center">
+  <img src="screenshots/edit.png" width="45%" alt='Edit event page' />
+  <img src="screenshots/delete-confirmation.png" width="45%" alt='Delete confirmation dialog' />
+</p>
 
 ### Features
 
