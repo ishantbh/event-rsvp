@@ -140,7 +140,8 @@ DATABASE_URL=
 # Direct connection for prisma cli
 DIRECT_URL=
 
-REDIS_URL=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
 
 BETTER_AUTH_SECRET=
 BETTER_AUTH_URL=http://localhost:3000
@@ -243,3 +244,4 @@ pnpm dev
 - [Better-Auth + GitHub OAuth](https://better-auth.com/docs/authentication/github)
 - [Send emails with Next.js](https://resend.com/docs/send-with-nextjs)
 - [Connect from Prisma to Neon](https://neon.com/docs/guides/prisma)
+- [Upstash Redis in Next](https://upstash.com/docs/redis/quickstarts/nextjs-app-router)
