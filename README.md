@@ -209,8 +209,8 @@ pnpm dev
 - [Next.js Server Actions](https://nextjs.org/docs/app/getting-started/mutating-data)
 - [Next.js API Routes](https://nextjs.org/docs/app/getting-started/route-handlers)
 - [Prisma ORM](https://www.prisma.io/docs)
-- PostgreSQL
-- Redis (rate limiting)
+- [Neon](https://neon.com/) PostgreSQL
+- [Upstash](https://upstash.com/) Redis (rate limiting)
 
 #### Auth & Email
 
