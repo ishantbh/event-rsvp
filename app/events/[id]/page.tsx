@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
 import { EventDetailContent } from '@/components/event-detail-content'
+import { EventDetailSkeleton } from '@/components/event-detail-skeleton'
+import { Suspense } from 'react'
 
 export default async function EventPage({
   params,
@@ -19,5 +21,9 @@ export default async function EventPage({
     redirect('/sign-in')
   }
 
-  return <EventDetailContent userId={session.user.id} eventId={id} />
+  return (
+    <Suspense fallback={<EventDetailSkeleton />}>
+      <EventDetailContent userId={session.user.id} eventId={id} />
+    </Suspense>
+  )
 }
