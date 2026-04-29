@@ -1,47 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { headers } from 'next/headers'
-
-import { auth } from '@/auth'
-
-const authRoutes = [
-  '/sign-in',
-  '/sign-up',
-  '/forgot-password',
-  '/reset-password',
-]
-
-const protectedRoutes = ['/dashboard', '/events']
+import { getSessionCookie } from 'better-auth/cookies'
 
 export async function proxy(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
+  const sessionCookie = getSessionCookie(request)
 
-  const { pathname } = request.nextUrl
-
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route))
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route),
-  )
-
-  if (!session && isProtectedRoute) {
+  if (!sessionCookie) {
     return NextResponse.redirect(new URL('/sign-in', request.url))
-  }
-
-  if (session && isAuthRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    '/dashboard',
-    '/events/:path*',
-    '/sign-in',
-    '/sign-up',
-    '/forgot-password',
-    '/reset-password',
-  ], // Specify the routes the middleware applies to
+  matcher: ['/dashboard', '/events/:path*'], // Specify the routes the middleware applies to
 }
