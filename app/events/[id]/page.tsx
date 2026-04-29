@@ -1,8 +1,8 @@
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
 import { EventDetailContent } from '@/components/event-detail-content'
-import { Unauthorized } from '@/components/unauthorized'
 
 export default async function EventPage({
   params,
@@ -16,7 +16,7 @@ export default async function EventPage({
   })
 
   if (!session) {
-    return <Unauthorized />
+    redirect('/sign-in')
   }
 
   return <EventDetailContent userId={session.user.id} eventId={id} />

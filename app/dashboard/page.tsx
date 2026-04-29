@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
-import { Unauthorized } from '@/components/unauthorized'
 import { DashboardContent } from '@/components/dashboard-content'
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default async function DashboardPage(props: {
   })
 
   if (!session) {
-    return <Unauthorized />
+    redirect('/sign-in')
   }
 
   const searchParams = await props.searchParams

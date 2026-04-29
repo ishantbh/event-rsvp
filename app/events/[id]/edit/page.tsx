@@ -1,11 +1,10 @@
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import { EventForm } from '@/components/event-form'
-import { Unauthorized } from '@/components/unauthorized'
 
 export const metadata: Metadata = {
   title: 'Edit Event',
@@ -23,7 +22,7 @@ export default async function EditEventPage({
   })
 
   if (!session) {
-    return <Unauthorized />
+    redirect('/sign-in')
   }
 
   const event = await prisma.event.findUnique({
