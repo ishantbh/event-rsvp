@@ -15,8 +15,6 @@ export default async function EditEventPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const { id } = await params
-
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -24,6 +22,8 @@ export default async function EditEventPage({
   if (!session) {
     redirect('/sign-in')
   }
+
+  const { id } = await params
 
   const event = await prisma.event.findUnique({
     where: { ownerUserId: session.user.id, id: id },
