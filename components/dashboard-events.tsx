@@ -20,8 +20,6 @@ export async function DashboardEvents({
   query,
   currentPage,
 }: DashboardEventsProps) {
-  await new Promise((resolve) => setTimeout(resolve, 3000))
-
   const [rows, eventsCount] = await prisma.$transaction([
     prisma.event.findMany({
       where: {
