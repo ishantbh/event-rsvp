@@ -27,7 +27,7 @@ export function UserAvatar({ name, image }: UserAvatarProps) {
     authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push('/sign-in')
+          router.replace('/sign-in')
         },
       },
     })
