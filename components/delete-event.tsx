@@ -26,17 +26,16 @@ export function DeleteEvent({ eventId }: { eventId: string }) {
 
   async function handleDelete() {
     startTransition(async () => {
-      try {
-        await deleteEventAction(eventId)
+      const res = await deleteEventAction(eventId)
 
-        toast.success('Event deleted successfully')
-
-        router.replace('/dashboard')
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : 'Something went wrong',
-        )
+      if (res?.error) {
+        toast.error(res.error)
+        return
       }
+
+      toast.success('Event deleted successfully')
+
+      router.replace('/dashboard')
     })
   }
 
