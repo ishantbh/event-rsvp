@@ -23,7 +23,7 @@ export async function createEventAction({
   description?: string
   location?: string
   eventDate?: string
-  capacity?: string
+  capacity?: number
 }): Promise<EventFormActionResponse> {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -78,7 +78,7 @@ export async function updateEventAction({
   description?: string
   location?: string
   eventDate?: string
-  capacity?: string
+  capacity?: number
 }): Promise<EventFormActionResponse> {
   const session = await auth.api.getSession({
     headers: await headers(),

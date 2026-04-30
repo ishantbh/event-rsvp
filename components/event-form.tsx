@@ -47,7 +47,7 @@ export function EventForm({ event }: EventFormProps) {
       description: event?.description ?? '',
       location: event?.location ?? '',
       eventDate: event?.eventDate ? formatDateTimeLocal(event.eventDate) : '',
-      capacity: event?.capacity?.toString() ?? '',
+      capacity: event?.capacity ?? undefined,
     },
     validators: {
       onSubmit: EventFormSchema,
@@ -180,7 +180,9 @@ export function EventForm({ event }: EventFormProps) {
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(e.target.valueAsNumber)
+                      }
                       aria-invalid={isInvalid}
                       placeholder='1000'
                       min='1'
