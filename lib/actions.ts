@@ -175,7 +175,7 @@ export async function submitRsvpAction(
     attendance: string
     organization?: string
   },
-) {
+): Promise<ActionResponse> {
   if (value.organization) {
     // honeypot
     // bot detected
@@ -184,23 +184,25 @@ export async function submitRsvpAction(
 
   const ip = await getIPFromHeaders()
 
-  // Rate limit per IP
-  await rateLimit(`rsvp:ip:${ip}`, 10, 60)
-
-  // Rate limit per event
-  await rateLimit(`rsvp:event:${token}`, 100, 60)
+  // Rate limit per IP and per event
+  if (
+    !(await rateLimit(`rsvp:ip:${ip}`, 10, 60)) ||
+    !(await rateLimit(`rsvp:event:${token}`, 100, 60))
+  ) {
+    return { error: 'Too many requests, please try again later.' }
+  }
 
   const res = InviteRsvpFormSchema.safeParse(value)
 
   if (res.error) {
-    throw new Error(res.error.message)
+    return { error: 'Invalid RSVP data' }
   }
 
   const { name, email, attendance: status } = res.data
 
   const emailNormalized = email.toLowerCase()
 
-  await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx) => {
     // Use the unique token to find the invite and the corresponding event
     const invite = await tx.eventInvite.findUnique({
       where: { token },
@@ -211,14 +213,14 @@ export async function submitRsvpAction(
     })
 
     if (!invite) {
-      throw new Error('Invite link is invalid.')
+      return { error: 'Invite link is invalid.' }
     }
 
     const { id: eventId, eventDate, capacity } = invite.event
 
     // Check if the event has already ended (only if user has set an event date)
     if (eventDate && eventDate.getTime() < Date.now()) {
-      throw new Error('Event has already ended.')
+      return { error: 'Event has already ended.' }
     }
 
     const rsvpCount = await tx.eventRsvp.count({
@@ -228,7 +230,7 @@ export async function submitRsvpAction(
     // Check if the event is full
     // Also enforce an upper limit of 10_000 attendees per event
     if (rsvpCount >= 10_000 || (capacity && capacity <= rsvpCount)) {
-      throw new Error('Event is full.')
+      return { error: 'Event is full.' }
     }
 
     // Create/update RSVP using event id and normalized email as key
