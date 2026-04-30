@@ -40,14 +40,14 @@ export function ForgotPasswordForm() {
     onSubmit: async ({ value }) => {
       const { email } = value
 
-      try {
-        await requestPasswordResetAction(email)
-        toast.success('Password reset link sent to your email')
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : 'Something went wrong',
-        )
+      const res = await requestPasswordResetAction(email)
+
+      if (res?.error) {
+        toast.error(res.error)
+        return
       }
+
+      toast.success('Password reset link sent to your email')
     },
   })
 
