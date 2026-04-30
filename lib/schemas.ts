@@ -22,7 +22,7 @@ export const SignUpFormSchema = z
   })
 
 export const EventFormSchema = z.object({
-  title: z.string().min(1, 'Name is required'),
+  title: z.string().min(1, 'Title is required'),
   description: z.string(),
   location: z.string(),
   eventDate: z.string(),
