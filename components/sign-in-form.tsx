@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { SignInWithGitHub } from '@/components/sign-in-with-github'
+import { DemoSignIn } from '@/components/demo-sign-in'
 
 export function SignInForm() {
   const router = useRouter()
@@ -41,6 +42,7 @@ export function SignInForm() {
       onSubmit: SignInFormSchema,
     },
     onSubmit: async ({ value }) => {
+      console.log(value)
       const { email, password } = value
 
       const res = await loginAction(email, password)
@@ -169,6 +171,8 @@ export function SignInForm() {
           />
 
           <SignInWithGitHub />
+
+          <DemoSignIn />
         </Field>
       </CardFooter>
     </Card>
