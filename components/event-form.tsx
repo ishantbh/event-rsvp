@@ -5,8 +5,9 @@ import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { EventFormSchema } from '@/lib/schemas'
+import type { EventFormActionResponse } from '@/lib/actions'
 import { createEventAction, updateEventAction } from '@/lib/actions'
+import { EventFormSchema } from '@/lib/schemas'
 import { formatDateTimeLocal } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -52,27 +53,28 @@ export function EventForm({ event }: EventFormProps) {
       onSubmit: EventFormSchema,
     },
     onSubmit: async ({ value }) => {
-      try {
-        if (event) {
-          // update event
-          const eventId = await updateEventAction({
-            id: event.id,
-            ...value,
-          })
+      console.log(value)
+      let res: EventFormActionResponse
 
-          toast.success('Event updated successfully')
-          router.push(`/events/${eventId}`)
-        } else {
-          // create event
-          const eventId = await createEventAction(value)
+      if (event) {
+        // update event
+        res = await updateEventAction({
+          id: event.id,
+          ...value,
+        })
+      } else {
+        // create event
+        res = await createEventAction(value)
+      }
 
-          toast.success('Event created successfully')
-          router.push(`/events/${eventId}`)
-        }
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : 'Something went wrong',
-        )
+      if (res.error) {
+        toast.error(res.error)
+        return
+      }
+
+      if (res.eventId) {
+        toast.success('Success')
+        router.push(`/events/${res.eventId}`)
       }
     },
   })
