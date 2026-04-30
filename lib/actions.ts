@@ -1,12 +1,16 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
 
 import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
-import { InviteRsvpFormSchema, EventFormSchema } from '@/lib/schemas'
 import { rateLimit } from '@/lib/rate-limit'
+import { InviteRsvpFormSchema, EventFormSchema } from '@/lib/schemas'
+
+export type ActionResponse = { error?: string } | undefined
+
+export type EventFormActionResponse = ActionResponse & { eventId?: string }
 
 export async function createEventAction({
   title,
@@ -20,13 +24,13 @@ export async function createEventAction({
   location?: string
   eventDate?: string
   capacity?: string
-}) {
+}): Promise<EventFormActionResponse> {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   if (!session) {
-    throw new Error('Unauthorized')
+    return { error: 'Unauthorized' }
   }
 
   const userId = session.user.id
@@ -40,7 +44,7 @@ export async function createEventAction({
   })
 
   if (res.error) {
-    throw new Error(res.error.message)
+    return { error: 'Invalid event data' }
   }
 
   const normalizedEventDate = res.data.eventDate
@@ -58,7 +62,7 @@ export async function createEventAction({
     },
   })
 
-  return created.id
+  return { eventId: created.id }
 }
 
 export async function updateEventAction({
@@ -75,13 +79,13 @@ export async function updateEventAction({
   location?: string
   eventDate?: string
   capacity?: string
-}) {
+}): Promise<EventFormActionResponse> {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   if (!session) {
-    throw new Error('Unauthorized')
+    return { error: 'Unauthorized' }
   }
 
   const userId = session.user.id
@@ -95,14 +99,14 @@ export async function updateEventAction({
   })
 
   if (res.error) {
-    throw new Error(res.error.message)
+    return { error: 'Invalid event data' }
   }
 
   const normalizedEventDate = res.data.eventDate
     ? new Date(res.data.eventDate)
     : null
 
-  const created = await prisma.event.update({
+  const updated = await prisma.event.update({
     where: { ownerUserId: userId, id },
     data: {
       title: res.data.title,
@@ -113,7 +117,7 @@ export async function updateEventAction({
     },
   })
 
-  return created.id
+  return { eventId: updated.id }
 }
 
 export async function createInviteAction(eventId: string) {
