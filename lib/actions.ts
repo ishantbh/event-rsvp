@@ -22,7 +22,7 @@ export async function createEventAction({
   title: string
   description?: string
   location?: string
-  eventDate?: string
+  eventDate?: Date
   capacity?: number
 }): Promise<EventFormActionResponse> {
   const session = await auth.api.getSession({
@@ -47,17 +47,13 @@ export async function createEventAction({
     return { error: 'Invalid event data' }
   }
 
-  const normalizedEventDate = res.data.eventDate
-    ? new Date(res.data.eventDate)
-    : null
-
   const created = await prisma.event.create({
     data: {
       ownerUserId: userId,
       title: res.data.title,
       description: res.data.description || null,
       location: res.data.location || null,
-      eventDate: normalizedEventDate,
+      eventDate: res.data.eventDate,
       capacity: res.data.capacity,
     },
   })
@@ -77,7 +73,7 @@ export async function updateEventAction({
   title: string
   description?: string
   location?: string
-  eventDate?: string
+  eventDate?: Date
   capacity?: number
 }): Promise<EventFormActionResponse> {
   const session = await auth.api.getSession({
@@ -102,17 +98,13 @@ export async function updateEventAction({
     return { error: 'Invalid event data' }
   }
 
-  const normalizedEventDate = res.data.eventDate
-    ? new Date(res.data.eventDate)
-    : null
-
   const updated = await prisma.event.update({
     where: { ownerUserId: userId, id },
     data: {
       title: res.data.title,
       description: res.data.description || null,
       location: res.data.location || null,
-      eventDate: normalizedEventDate,
+      eventDate: res.data.eventDate,
       capacity: res.data.capacity,
     },
   })

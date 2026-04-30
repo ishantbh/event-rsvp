@@ -38,22 +38,31 @@ type EventFormProps = {
   }
 }
 
+type EventFormDefaultValues = {
+  title: string
+  description?: string
+  location?: string
+  eventDate?: Date
+  capacity?: number
+}
+
 export function EventForm({ event }: EventFormProps) {
   const router = useRouter()
 
+  const defaultValues: EventFormDefaultValues = {
+    title: event?.title ?? '',
+    description: event?.description ?? '',
+    location: event?.location ?? '',
+    eventDate: event?.eventDate ?? undefined,
+    capacity: event?.capacity ?? undefined,
+  }
+
   const form = useForm({
-    defaultValues: {
-      title: event?.title ?? '',
-      description: event?.description ?? '',
-      location: event?.location ?? '',
-      eventDate: event?.eventDate ? formatDateTimeLocal(event.eventDate) : '',
-      capacity: event?.capacity ?? undefined,
-    },
+    defaultValues,
     validators: {
       onSubmit: EventFormSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
       let res: EventFormActionResponse
 
       if (event) {
@@ -67,12 +76,12 @@ export function EventForm({ event }: EventFormProps) {
         res = await createEventAction(value)
       }
 
-      if (res.error) {
+      if (res?.error) {
         toast.error(res.error)
         return
       }
 
-      if (res.eventId) {
+      if (res?.eventId) {
         toast.success('Success')
         router.push(`/events/${res.eventId}`)
       }
@@ -208,9 +217,17 @@ export function EventForm({ event }: EventFormProps) {
                       type='datetime-local'
                       id={field.name}
                       name={field.name}
-                      value={field.state.value}
+                      value={
+                        field.state.value
+                          ? formatDateTimeLocal(field.state.value)
+                          : undefined
+                      }
                       onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) =>
+                        field.handleChange(
+                          e.target.value ? new Date(e.target.value) : undefined,
+                        )
+                      }
                       aria-invalid={isInvalid}
                     />
                     <FieldDescription>
