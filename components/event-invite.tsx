@@ -1,6 +1,9 @@
 'use client'
 
-import { createInviteAction } from '@/lib/actions'
+import { useActionState } from 'react'
+import { Loader2 } from 'lucide-react'
+
+import { ActionResponse, createInviteAction } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -10,9 +13,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { InviteLink } from '@/components/invite-link'
-import { useActionState, useEffect } from 'react'
-import { Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
 
 type EventInviteProps = {
   eventId: string
@@ -20,7 +20,7 @@ type EventInviteProps = {
 }
 
 export function EventInvite({ eventId, inviteUrl }: EventInviteProps) {
-  const initialState = { error: null }
+  const initialState: ActionResponse = undefined
 
   const createInviteActionForEvent = createInviteAction.bind(null, eventId)
 
@@ -32,7 +32,7 @@ export function EventInvite({ eventId, inviteUrl }: EventInviteProps) {
   return (
     <Card className='max-w-2xl'>
       <CardHeader>
-        {state.error && (
+        {state?.error && (
           <div className='mb-4 rounded-md border border-destructive/50 bg-destructive/10'>
             <p className='p-3 text-destructive font-semibold text-sm'>
               {state.error}
