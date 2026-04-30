@@ -255,13 +255,15 @@ export async function submitRsvpAction(
   })
 }
 
-export async function deleteEventAction(eventId: string) {
+export async function deleteEventAction(
+  eventId: string,
+): Promise<ActionResponse> {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   if (!session) {
-    throw new Error('Unauthorized')
+    return { error: 'Unauthorized' }
   }
 
   const userId = session.user.id
