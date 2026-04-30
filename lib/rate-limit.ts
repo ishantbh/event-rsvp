@@ -11,7 +11,5 @@ export async function rateLimit(
     await redis.expire(key, windowSeconds)
   }
 
-  if (current > limit) {
-    throw new Error('Too many requests, please try again later.')
-  }
+  return current <= limit
 }
