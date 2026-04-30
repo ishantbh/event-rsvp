@@ -298,17 +298,25 @@ export async function loginAction(email: string, password: string) {
 
   const normalizedEmail = email.toLowerCase().trim()
 
-  await rateLimit(`login:ip:${ip}`, 5, 60) // 5 requests per minute per IP
-  await rateLimit(`login:email:${normalizedEmail}`, 5, 60) // 5 requests per minute per email
+  if (
+    !(await rateLimit(`login:ip:${ip}`, 5, 60)) || // 5 requests per minute per IP
+    !(await rateLimit(`login:email:${normalizedEmail}`, 5, 60)) // 5 requests per minute per email
+  ) {
+    return { error: 'Too many requests, please try again later.' }
+  }
 
-  await auth.api.signInEmail({
-    body: {
-      email: normalizedEmail,
-      password,
-      rememberMe: true,
-    },
-    headers: await headers(),
-  })
+  try {
+    await auth.api.signInEmail({
+      body: {
+        email: normalizedEmail,
+        password,
+        rememberMe: true,
+      },
+      headers: await headers(),
+    })
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Failed to sign in' }
+  }
 }
 
 async function getIPFromHeaders() {

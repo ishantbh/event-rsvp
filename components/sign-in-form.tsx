@@ -6,8 +6,9 @@ import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { SignInFormSchema } from '@/lib/schemas'
+import { authClient } from '@/lib/auth-client'
 import { loginAction } from '@/lib/actions'
+import { SignInFormSchema } from '@/lib/schemas'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -26,7 +27,6 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { SignInWithGitHub } from '@/components/sign-in-with-github'
-import { authClient } from '@/lib/auth-client'
 
 export function SignInForm() {
   const router = useRouter()
@@ -43,19 +43,20 @@ export function SignInForm() {
     onSubmit: async ({ value }) => {
       const { email, password } = value
 
-      try {
-        await loginAction(email, password)
+      const res = await loginAction(email, password)
 
-        toast.success('Sign in successful')
-
-        await refetch()
-
-        router.push('/dashboard')
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : 'Something went wrong',
-        )
+      if (res?.error) {
+        toast.error(res.error)
+        return
       }
+
+      toast.success('Sign in successful')
+
+      // loginAction runs on server and does not update client session
+      // so we need to manually update client session
+      await refetch()
+
+      router.replace('/dashboard')
     },
   })
 
