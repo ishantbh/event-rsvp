@@ -25,20 +25,13 @@ export const EventFormSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string(),
   location: z.string(),
-  eventDate: z.string(),
+  eventDate: z.date().optional(),
   capacity: z
-    .string()
-    .trim()
-    .refine((v) => v === '' || /^\d+$/.test(v), {
-      message: 'Capacity must be a number',
-    })
-    .refine((v) => v === '' || Number(v) > 0, {
-      message: 'Capacity must be greater than 0',
-    })
-    .refine((v) => v === '' || Number(v) <= 10_000, {
-      message: 'Capacity must be less than or equal to 10,000',
-    })
-    .transform((v) => (v === '' ? undefined : Number(v))),
+    .number('Capacity must be a number')
+    .int('Capacity must be a whole number')
+    .positive('Capacity must be greater than 0')
+    .max(10_000, 'Capacity must be less than or equal to 10,000')
+    .optional(),
 })
 
 export const InviteRsvpFormSchema = z.object({
