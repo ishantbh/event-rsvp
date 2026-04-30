@@ -278,8 +278,12 @@ export async function requestPasswordResetAction(email: string) {
 
   const normalizedEmail = email.toLowerCase().trim()
 
-  await rateLimit(`forgot:ip:${ip}`, 5, 3600) // 5 requests per hour per IP
-  await rateLimit(`forgot:email:${normalizedEmail}`, 3, 3600) // 3 requests per hour per email
+  if (
+    !(await rateLimit(`forgot:ip:${ip}`, 5, 3600)) || // 5 requests per hour per IP
+    !(await rateLimit(`forgot:email:${normalizedEmail}`, 3, 3600)) // 3 requests per hour per email
+  ) {
+    return { error: 'Too many requests, please try again later.' }
+  }
 
   await auth.api.requestPasswordReset({
     body: {
