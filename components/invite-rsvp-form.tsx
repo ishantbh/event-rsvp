@@ -45,15 +45,14 @@ export function InviteRsvpForm({ token, submitted }: InviteRsvpFormProps) {
       onSubmit: InviteRsvpFormSchema,
     },
     onSubmit: async ({ value }) => {
-      try {
-        await submitRsvpActionWithToken(value)
+      const res = await submitRsvpActionWithToken(value)
 
-        router.replace(`/invites/${token}?submitted=1`)
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : 'Something went wrong',
-        )
+      if (res?.error) {
+        toast.error(res.error)
+        return
       }
+
+      router.replace(`/invites/${token}?submitted=1`)
     },
   })
 
