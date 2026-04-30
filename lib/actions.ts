@@ -120,7 +120,9 @@ export async function updateEventAction({
   return { eventId: updated.id }
 }
 
-export async function createInviteAction(eventId: string) {
+export async function createInviteAction(
+  eventId: string,
+): Promise<ActionResponse> {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -162,8 +164,6 @@ export async function createInviteAction(eventId: string) {
     })
 
     revalidatePath(`/events/${eventId}`)
-
-    return { error: null }
   })
 }
 
