@@ -311,6 +311,13 @@ export async function loginAction(email: string, password: string) {
   }
 }
 
+export async function loginDemoUserAction(): Promise<ActionResponse> {
+  return await loginAction(
+    process.env.DEMO_USER_EMAIL!,
+    process.env.DEMO_USER_PASSWORD!,
+  )
+}
+
 async function getIPFromHeaders() {
   const headersList = await headers()
 
