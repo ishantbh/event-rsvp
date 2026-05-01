@@ -19,27 +19,38 @@ export default async function Home() {
 
   return (
     <div className='flex flex-1 flex-col gap-6'>
+      {/* Faint glow */}
+      <div
+        aria-hidden
+        className='pointer-events-none absolute inset-0 rounded-3xl bg-primary/5 blur-3xl'
+      />
+
       <section className='space-y-4 text-center md:text-start'>
-        <Badge variant='secondary'>Next.js 16 + Better Auth + Prisma</Badge>
+        <Badge
+          variant='secondary'
+          className='border border-muted-foreground/10 p-3'
+        >
+          Next.js 16 + Better Auth + Prisma
+        </Badge>
         <h1 className='text-4xl font-semibold tracking-tight'>
-          Plan events and track RSVPs fast
+          Create event invites and track RSVPs without the chaos
         </h1>
         <p className='max-w-2xl mx-auto md:mx-0 text-muted-foreground'>
-          Create events, share a unique invite link, and watch attendee status
-          update with Going, Maybe, and Not going counts
+          Create events, share unique invite links, and track responses - no
+          sign-up required for attendees.
         </p>
         <div className='flex flex-wrap items-center justify-center md:justify-start gap-3'>
           {session ? (
-            <Button variant='outline' asChild>
+            <Button asChild>
               <Link href='/dashboard'>Open dashboard</Link>
             </Button>
           ) : (
             <>
               <Button asChild>
-                <Link href='/sign-up'>Create account</Link>
-              </Button>
-              <Button variant='secondary' asChild>
                 <Link href='/sign-in'>Sign in</Link>
+              </Button>
+              <Button variant='outline' asChild>
+                <Link href='/sign-up'>Create account</Link>
               </Button>
             </>
           )}
