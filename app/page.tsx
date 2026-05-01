@@ -22,7 +22,7 @@ export default async function Home() {
       {/* Faint glow */}
       <div
         aria-hidden
-        className='pointer-events-none absolute inset-0 rounded-3xl bg-blue-600/5 blur-3xl'
+        className='pointer-events-none absolute inset-0 rounded-3xl bg-primary/5 blur-3xl'
       />
 
       <section className='space-y-4 text-center md:text-start'>
