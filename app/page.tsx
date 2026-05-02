@@ -1,5 +1,6 @@
 import { HeroSection } from '@/components/landing-page/hero-section'
 import { HowItWorks } from '@/components/landing-page/how-it-works'
+import { ShowcaseSection } from '@/components/landing-page/showcase-section'
 import { ValueSection } from '@/components/landing-page/value-section'
 
 export default async function Home() {
@@ -8,6 +9,7 @@ export default async function Home() {
       <HeroSection />
       <HowItWorks />
       <ValueSection />
+      <ShowcaseSection />
     </div>
   )
 }
