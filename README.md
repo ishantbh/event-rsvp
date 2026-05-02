@@ -29,38 +29,21 @@ Built with a focus on real-world product flows, authentication, security, and sc
 ### Screenshots
 
 <p align='center'>
-  <img src="screenshots/home-page.png" width="45%" alt='Landing page' />
+  <img src="public/screenshots/home-page.png" width="30%" alt='Landing page' />
+  <img src="public/screenshots/dashboard-dark.png" width="30%" alt='Dashboard' />
+  <img src="public/screenshots/rsvp-form-dark.png" width="30%" alt='RSVP form' />
 </p>
 
 <p align="center">
-  <img src="screenshots/sign-in.png" width="30%" alt='Sign in page' />
-  <img src="screenshots/sign-up.png" width="30%" alt='Sign up page' />
-  <img src="screenshots/forgot-pass.png" width="30%" alt='Forgot password page' />
+  <img src="public/screenshots/sign-in.png" width="30%" alt='Sign in page' />
+  <img src="public/screenshots/sign-up.png" width="30%" alt='Sign up page' />
+  <img src="public/screenshots/forgot-pass.png" width="30%" alt='Forgot password page' />
 </p>
 
 <p align="center">
-  <img src="screenshots/reset-pass.png" width="30%" alt='Reset password page' />
-  <img src="screenshots/rsvp-form.png" width="30%" alt='RSVP form' />
-  <img src="screenshots/rsvp-form-submitted.png" width="30%" alt='RSVP form submitted' />
-</p>
-
-<p align='center'>
-  <img src="screenshots/dashboard.png" width="90%" alt='Dashboard' />
-</p>
-
-<p align="center">
-  <img src="screenshots/search.png" width="45%" alt='Searching' />
-  <img src="screenshots/pagination.png" width="45%" alt='Pagination' />
-</p>
-
-<p align="center">
-  <img src="screenshots/event-details.png" width="45%" alt='Event details page' />
-  <img src="screenshots/event-details-light.png" width="45%" alt='Event details page in light theme' />
-</p>
-
-<p align="center">
-  <img src="screenshots/edit.png" width="45%" alt='Edit event page' />
-  <img src="screenshots/delete-confirmation.png" width="45%" alt='Delete confirmation dialog' />
+  <img src="public/screenshots/reset-pass.png" width="30%" alt='Reset password page' />
+  <img src="public/screenshots/event-details-dark.png" width="30%" alt='Event details page' />
+  <img src="public/screenshots/edit.png" width="30%" alt='Edit event page' />
 </p>
 
 ### Features
