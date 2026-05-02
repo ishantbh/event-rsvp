@@ -1,3 +1,4 @@
+import { FinalCTA } from '@/components/landing-page/final-cta'
 import { HeroSection } from '@/components/landing-page/hero-section'
 import { HowItWorks } from '@/components/landing-page/how-it-works'
 import { ShowcaseSection } from '@/components/landing-page/showcase-section'
@@ -10,6 +11,7 @@ export default async function Home() {
       <HowItWorks />
       <ValueSection />
       <ShowcaseSection />
+      <FinalCTA />
     </div>
   )
 }
