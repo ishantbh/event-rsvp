@@ -24,7 +24,7 @@ Built with a focus on real-world product flows, authentication, security, and sc
 
 ### Demo Link
 
-- Live Demo: [https://yestogo.netlify.app/](https://yestogo.netlify.app/)
+- Live Demo: [https://yestogo-rsvp.vercel.app/](https://yestogo-rsvp.vercel.app/)
 
 ### Screenshots
 
