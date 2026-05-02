@@ -1,4 +1,4 @@
-# Event RSVP
+# YesToGo - Event RSVP
 
 Create, manage, and RSVP for events
 
