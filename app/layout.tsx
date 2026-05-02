@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | Event RSVP`,
-    default: 'Event RSVP',
+    template: `%s | YesToGo`,
+    default: 'YesToGo',
   },
   description: 'Create, manage and RSVP for events',
 }
@@ -49,7 +49,7 @@ export default function RootLayout({
         >
           <Header />
 
-          <main className='w-full max-w-6xl mx-auto flex-1 flex flex-col px-4 py-8'>
+          <main className='w-full max-w-6xl mx-auto flex-1 flex flex-col px-4 pt-20 pb-8 lg:pt-28'>
             {children}
           </main>
 

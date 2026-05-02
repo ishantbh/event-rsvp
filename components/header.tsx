@@ -11,10 +11,10 @@ export function Header() {
   const { data: session, isPending, error, refetch } = authClient.useSession()
 
   return (
-    <header className='border-b bg-background backdrop-blur'>
+    <header className='fixed top-0 left-0 right-0 border-b bg-background/80 backdrop-blur z-10'>
       <div className='w-full max-w-6xl mx-auto h-16 flex items-center justify-between px-4'>
-        <div className='text-sm font-semibold tracking-wide'>
-          <Link href='/'>Event RSVP</Link>
+        <div className='text-lg font-semibold tracking-wide'>
+          <Link href='/'>YesToGo</Link>
         </div>
 
         <div className='flex items-center gap-3'>
